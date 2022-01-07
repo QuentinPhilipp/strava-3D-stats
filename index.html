@@ -18,18 +18,30 @@
             document.body.appendChild( renderer.domElement );
 
             const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-            const cube = new THREE.Mesh( geometry, material );
-            scene.add( cube );
+            const materialRed = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+            const materialGreen = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+            const materialBlue = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
 
-            camera.position.z = 5;
+
+            var cube = new THREE.Mesh( geometry, materialRed );
+            scene.add( cube );
+            cube.position.x = 2;
+            var cube2 = new THREE.Mesh( geometry, materialGreen );
+            scene.add( cube2 );
+            cube2.position.y = 2;       
+            var cube3 = new THREE.Mesh( geometry, materialBlue );
+            scene.add( cube3 );
+            cube3.position.z = 2;       
+
+            
+            camera.position.z = 8;
+            camera.position.x = 2;
+            camera.rotation.y = 0.5;
 
             function animate() {
-                requestAnimationFrame( animate );
-
+                requestAnimationFrame( animate ); 
                 cube.rotation.x += 0.01;
                 cube.rotation.y += 0.01;
-                
                 renderer.render( scene, camera );
             }
 
