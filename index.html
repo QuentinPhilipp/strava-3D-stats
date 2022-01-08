@@ -1,53 +1,21 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>My first three.js app</title>
-		<style>
-			body { margin: 0; }
-		</style>
-	</head>
-	<body>
-		<script src="js/three.js"></script>
-		<script>
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-            const renderer = new THREE.WebGLRenderer();
-            renderer.setSize( window.innerWidth, window.innerHeight );
-            document.body.appendChild( renderer.domElement );
+<head>
+  <title>Test 3D</title>
+  <style>
+    body { margin: 0; }
+    canvas { width: 100%; height: 100%;}
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
 
-            const geometry = new THREE.BoxGeometry();
-            const materialRed = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-            const materialGreen = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-            const materialBlue = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+  <link href="./styles/main.css" rel="stylesheet" type="text/css">
 
+  <script type="module" src="./src/main.js"></script>
+</head>
 
-            var cube = new THREE.Mesh( geometry, materialRed );
-            scene.add( cube );
-            cube.position.x = 2;
-            var cube2 = new THREE.Mesh( geometry, materialGreen );
-            scene.add( cube2 );
-            cube2.position.y = 2;       
-            var cube3 = new THREE.Mesh( geometry, materialBlue );
-            scene.add( cube3 );
-            cube3.position.z = 2;       
+<body>
+</body>
 
-            
-            camera.position.z = 8;
-            camera.position.x = 2;
-            camera.rotation.y = 0.5;
-
-            function animate() {
-                requestAnimationFrame( animate ); 
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.01;
-                renderer.render( scene, camera );
-            }
-
-            animate();
-
-
-		</script>
-	</body>
 </html>
