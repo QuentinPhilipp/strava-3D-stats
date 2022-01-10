@@ -1,3 +1,5 @@
 node_modules
 activities.csv
 activitiesBulk.json
+.env
+package-lock.json
