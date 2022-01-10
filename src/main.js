@@ -5,13 +5,11 @@ import {
     BoxGeometry,
     WebGLRenderer,
     Scene,
-    AxesHelper,
     EdgesGeometry,
     LineBasicMaterial,
     LineSegments,
     Group,
     Box3,
-    BoxHelper
   } from "../vendor/three/build/three.module.js";
   
 import { OrbitControls } from "../vendor/three/examples/jsm/controls/OrbitControls.js";
@@ -19,7 +17,19 @@ import { OrbitControls } from "../vendor/three/examples/jsm/controls/OrbitContro
 const borderWidth = 2;
 const HEIGHT = 1;
 const renderer = new WebGLRenderer();
+
+window.addEventListener( 'resize', onWindowResize, false );
+
 renderer.setSize( window.innerWidth, window.innerHeight );
+function onWindowResize(){
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
 document.body.appendChild( renderer.domElement );
 
 const scene = new Scene();
@@ -148,36 +158,6 @@ function populateActivities(activities, year) {
     activityGroup.position.set(-(7/2) + 0.5, 0, -58/2 +0.5)
 
     scene.add(activityGroup);
-
-
-    // // DEBUG
-    // for (let index = 0; index < 55; index++) {
-    //     const geometry = new BoxGeometry(1, 0.8, 1);
-    //     if (index%10 == 0) {
-    //         var cube = new Mesh( geometry, debugMaterial2 );
-    //     }
-    //     else {
-    //         var cube = new Mesh( geometry, debugMaterial );
-    //     }
-    //     cube.position.set(7 , 1, index );
-    //     activityGroup.add( cube );
-    // }
-    // for (let index = 1; index < year.getNumberOfWeeks(); index++) {
-    //     for (let i = 0; i < 7; i++) {
-    //         const geometry = new BoxGeometry(1, 0.8, 1);
-    //         var cube = new Mesh( geometry, debugMaterial2 );
-    //         cube.position.set(i , 1, index);
-    //         activityGroup.add( cube );
-    //     }
-    // }
-    // const oneJan = new Date(year.getFullYear(), 0, 1);
-    // let numberOfDays = Math.floor((oneJan - oneJan) / (24 * 60 * 60 * 1000));
-    // let weekNumber = Math.ceil(( oneJan.getDay() + 1 + numberOfDays) / 7);
-    // let dayOfWeek = oneJan.getDay();
-    // const geometry = new BoxGeometry(1, 1.5, 1);
-    // var cube = new Mesh( geometry, debugMaterial );
-    // cube.position.set(dayOfWeek , 1, weekNumber);
-    // activityGroup.add( cube );
 }
 
 function sortActivityPerYear(activities, targetYear) {
@@ -205,8 +185,6 @@ function showActivityPlaceholder(year) {
 
 function display() {
     let year = new Date("2021");
-
-
     let requestURL = 'data/activities.json';
     let request = new XMLHttpRequest();
     request.open('GET', requestURL);
@@ -221,23 +199,6 @@ function display() {
       }
 
 }
-
-
-Date.prototype.isLeapYear = function() {
-    var year = this.getFullYear();
-    if((year & 3) != 0) return false;
-    return ((year % 100) != 0 || (year % 400) == 0);
-};
-
-// Get Day of Year
-Date.prototype.getDOY = function() {
-    var dayCount = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-    var mn = this.getMonth();
-    var dn = this.getDate();
-    var dayOfYear = dayCount[mn] + dn;
-    if(mn > 1 && this.isLeapYear()) dayOfYear++;
-    return dayOfYear;
-};
 
 Date.prototype.getNumberOfWeeks = function() {
     let oneJan = new Date(this.getFullYear(),0,1);
@@ -255,5 +216,6 @@ Date.prototype.getWeekNumber = function() {
     var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
     return [d.getUTCFullYear(), weekNo];
 }
+
 animate();
 display();
