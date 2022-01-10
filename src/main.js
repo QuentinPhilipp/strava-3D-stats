@@ -14,68 +14,57 @@ import {
   
 import { OrbitControls } from "../vendor/three/examples/jsm/controls/OrbitControls.js";
 
-const borderWidth = 2;
-const HEIGHT = 1;
+const BORDER_WIDTH = 2;
+const BASE_HEIGHT = 1;
+
 const renderer = new WebGLRenderer();
+document.body.appendChild( renderer.domElement );
 
+// Set size
 window.addEventListener( 'resize', onWindowResize, false );
-
 renderer.setSize( window.innerWidth, window.innerHeight );
 function onWindowResize(){
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     renderer.setSize( window.innerWidth, window.innerHeight );
-
 }
-
-document.body.appendChild( renderer.domElement );
 
 const scene = new Scene();
 const camera = new PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
 const controls = new OrbitControls( camera, renderer.domElement );
 
+// Object groups
 var activityGroup = new Group();
 var dayPlaceholderGroup = new Group();
 
-// var axesHelper = new AxesHelper( 5 );
-// scene.add( axesHelper );
+// Materials
+const activitiesMaterial = new MeshBasicMaterial( { color: 0xff0000 } );
+const baseMaterial = new MeshBasicMaterial( { color: 0xa6a6a6 } );
+const placeholderMaterial = new MeshBasicMaterial( { color: 0x707070 } );
 
-//controls.update() must be called after any manual changes to the camera's transform
-camera.position.set( 7/2, 20, 50 );
-controls.update();
+
+function addWireframe(cube) {
+    var geo = new EdgesGeometry( cube.geometry );
+    var mat = new LineBasicMaterial( { color: 0x000000, linewidth: 10 } );
+    var wireframe = new LineSegments( geo, mat );
+    wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
+    cube.add( wireframe );
+}
+
 
 function createBottom(tiles) {
     let bbox = new Box3().setFromObject(tiles);
  
     console.log(bbox.min, bbox.max);
-    const materialWhite = new MeshBasicMaterial( { color: 0xa6a6a6 } );
-    const width = (bbox.max.x - bbox.min.x) + borderWidth;
-    const length = (bbox.max.z - bbox.min.z) + borderWidth;
+    const width = (bbox.max.x - bbox.min.x) + BORDER_WIDTH;
+    const length = (bbox.max.z - bbox.min.z) + BORDER_WIDTH;
 
-    const bottomGeometry = new BoxGeometry(width, HEIGHT, length);
-    let center = new Mesh( bottomGeometry, materialWhite);
+    const bottomGeometry = new BoxGeometry(width, BASE_HEIGHT, length);
+    let center = new Mesh( bottomGeometry, baseMaterial);
     center.position.set((Math.abs(bbox.max.x) - Math.abs(bbox.min.x)) / 2, 0, (Math.abs(bbox.max.z) - Math.abs(bbox.min.z)) / 2);
 
     scene.add( center );
-
-    var geo = new EdgesGeometry( center.geometry );
-    var mat = new LineBasicMaterial( { color: 0x000000, linewidth: 10 } );
-    var wireframe = new LineSegments( geo, mat );
-    wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
-    center.add( wireframe );
-}
-
-function animate() {
-
-	requestAnimationFrame( animate );
-
-	// required if controls.enableDamping or controls.autoRotate are set to true
-	controls.update();
-
-	renderer.render( scene, camera );
-
+    addWireframe(center);
 }
 
 function getPositionFromDay(day) {
@@ -113,49 +102,31 @@ function getPositionFromDay(day) {
 
 function addDayPlaceholder(day) {
     const geometry = new BoxGeometry(1, 0.1, 1);
-    const placeholderMaterial = new MeshBasicMaterial( { color: 0x707070 } );
     var cube = new Mesh( geometry, placeholderMaterial );
     let position = getPositionFromDay(day);
     cube.position.set(position.x, 0.5, position.y);
     dayPlaceholderGroup.add( cube );
-
-    var geo = new EdgesGeometry( cube.geometry );
-    var mat = new LineBasicMaterial( { color: 0x000000, linewidth: 10 } );
-    var wireframe = new LineSegments( geo, mat );
-    wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
-    cube.add( wireframe );
+    addWireframe(cube);
 }
 
 function populateActivities(activities, year) {
-    const materialRed = new MeshBasicMaterial( { color: 0xff0000 } );
-    const debugMaterial = new MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
-    const debugMaterial2 = new MeshBasicMaterial( { color: 0x0000ff, wireframe: true } );
 
     activities.forEach( function(activity) {
         const activityDate = new Date(activity.start_date);
-        const oneJan = new Date(activityDate.getFullYear(), 0, 1);
 
-        let numberOfDays = Math.floor((activityDate - oneJan) / (24 * 60 * 60 * 1000));
-        let weekNumber = Math.ceil(( activityDate.getDay() + 1 + numberOfDays) / 7);
-        let dayOfWeek = activityDate.getDay();
+        let position = getPositionFromDay(activityDate);
 
         // Create block
         const height = activity.distance / 10000; // 10km = 1unit
         const geometry = new BoxGeometry(0.9, height, 0.9);
-        var cube = new Mesh( geometry, materialRed );
-        cube.position.set(dayOfWeek , height/2, weekNumber);
+        var cube = new Mesh( geometry, activitiesMaterial );
+
+        cube.position.set(position.x , height/2, position.y);
         activityGroup.add( cube );
-
-        var geo = new EdgesGeometry( cube.geometry );
-        var mat = new LineBasicMaterial( { color: 0x000000, linewidth: 10 } );
-        var wireframe = new LineSegments( geo, mat );
-        wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
-        cube.add( wireframe );
-
+        addWireframe(cube)
     })
 
-    console.log(year.getNumberOfWeeks())
-    activityGroup.position.set(-(7/2) + 0.5, 0, -58/2 +0.5)
+    activityGroup.position.set(-(7/2) + 0.5, 0, -year.getNumberOfWeeks()/2 +0.5);  // Center activities
 
     scene.add(activityGroup);
 }
@@ -172,19 +143,18 @@ function sortActivityPerYear(activities, targetYear) {
 }
 
 function showActivityPlaceholder(year) {
-    let start = new Date(year.getFullYear(), 0, 1)  // 1 Jan
-    let stop = new Date(year.getFullYear(), 11, 31)  // 31 Dec
-
+    let start = new Date(year.getFullYear(), 0, 1);  // 1 Jan
+    let stop = new Date(year.getFullYear(), 11, 31);  // 31 Dec
     for (var d = start; d <= stop; d.setDate(d.getDate() + 1)) {
         addDayPlaceholder(new Date(d));
     }
     scene.add(dayPlaceholderGroup);
-    dayPlaceholderGroup.position.set(-(7/2) + 0.5, 0, -58/2 +0.5)
+    dayPlaceholderGroup.position.set(-(7/2) + 0.5, 0, -year.getNumberOfWeeks()/2 +0.5); // Center placeholders
 }
 
 
-function display() {
-    let year = new Date("2021");
+function display(date) {
+    let year = new Date(date);
     let requestURL = 'data/activities.json';
     let request = new XMLHttpRequest();
     request.open('GET', requestURL);
@@ -198,6 +168,12 @@ function display() {
         createBottom(dayPlaceholderGroup);
       }
 
+}
+
+function animate() {
+	requestAnimationFrame( animate );
+	controls.update();
+	renderer.render( scene, camera );
 }
 
 Date.prototype.getNumberOfWeeks = function() {
@@ -217,5 +193,7 @@ Date.prototype.getWeekNumber = function() {
     return [d.getUTCFullYear(), weekNo];
 }
 
+camera.position.set( 7/2, 20, 50 );
+controls.update();
 animate();
-display();
+display("2021");
