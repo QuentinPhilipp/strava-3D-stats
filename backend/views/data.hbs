@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strava 3D Stats</title>
+</head>
+<body>
+    <data id="year-container" value="{{selectedYear}}"></data>
+    <script>
+        async function loadData(year) {
+            let url = "/data?year="+year;
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log(data);
+        }
+
+        let dataElt = document.getElementById("year-container");
+        let year = dataElt.getAttribute("value");
+
+        loadData(year);
+
+        
+
+    </script>
+</body>
+</html>
