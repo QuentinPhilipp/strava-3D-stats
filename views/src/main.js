@@ -180,10 +180,15 @@ async function loadData(year) {
 }
 
 let dataElt = document.getElementById("year-container");
-let year = dataElt.getAttribute("value");
+let yearStr = dataElt.getAttribute("value");
 
 camera.position.set( 7/2, 20, 50 );
 controls.update();
 animate();
-let activities = await loadData(year);
-display(activities, new Date(year, 0, 1));
+
+let year = new Date(yearStr, 0, 1)
+showActivityPlaceholder(year);
+createBottom(dayPlaceholderGroup);
+
+let activities = await loadData(yearStr);
+populateActivities(activities, year);

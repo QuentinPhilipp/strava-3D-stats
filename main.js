@@ -3,14 +3,11 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const session = require('express-session');
 const path = require('path');
-
 const app = express();
-const port = 3000;
+const port = 8081;
 
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, 'views')));
-
-
 require('dotenv').config()
 
 strava.config.redirect_uri = process.env.STRAVA_REDIRECT_URI;
@@ -84,13 +81,10 @@ app.get("/exchange_token", (req, res) => {
     // Get short-lived access_token from Strava based on received code and scope
     let authenticationCode = req.query.code;
     let scope = req.query.scope;
-    console.log(authenticationCode, scope);
 
     if (scope.includes("activity:read_all") && scope.includes("read")) {
         // Correct scope, continue login workflow
         strava.oauth.getToken(authenticationCode, function (err, payload, connectionIds) {
-            console.log(err, connectionIds);
-            console.log("Ids:", connectionIds);
             if (connectionIds.errors && connectionIds.errors.length > 0) {
                 console.log(connectionIds.errors);
             }
