@@ -26,10 +26,11 @@ function isAuth(req) {
     if (req.session && req.session.userID) {
         return true;
     }
+    if (process.env.SKIP_STRAVA_REQUEST == "true") {
+        return true;
+    }
     return false;
 }
-
-
 
 app.get("/", async function (req, res) {
     let selectedYear = req.query.year
@@ -57,7 +58,12 @@ app.get("/", async function (req, res) {
 
 app.get("/data", async (req, res) => {
     selectedYear = req.session.selectedYear;
-    result = await getYearResult(req, selectedYear);
+    if (process.env.SKIP_STRAVA_REQUEST == "true") {
+        result = await getFakeResult(process.env.TEST_YEAR);
+    }
+    else {
+        result = await getYearResult(req, selectedYear);
+    }
     res.json({rawData: result});
 })
 
@@ -94,6 +100,11 @@ async function getYearResult(req, year) {
     return processActivities(activities);
 }
 
+async function getFakeResult(year) {
+    var fs = require('fs');
+    var obj = JSON.parse(fs.readFileSync(`test-files/fake-${year}.json`, 'utf8'));
+    return obj;
+}
 
 function processActivities(activities) {
     var activitiesProcessed = new Array();
@@ -114,7 +125,6 @@ function processActivities(activities) {
     });
     return activitiesProcessed;
 }
-
 
 app.get("/login", function (req, res) {
     res.redirect(strava.oauth.getRequestAccessURL({scope: "activity:read_all"}));
@@ -150,7 +160,6 @@ app.get("/exchange_token", (req, res) => {
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
 });
-
 
 const sameDay = (first, second) => {
     var firstDay = new Date(first);
