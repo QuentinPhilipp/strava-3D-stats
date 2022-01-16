@@ -56,7 +56,6 @@ function addWireframe(cube) {
 function createBottom(tiles) {
     let bbox = new Box3().setFromObject(tiles);
  
-    console.log(bbox.min, bbox.max);
     const width = (bbox.max.x - bbox.min.x) + BORDER_WIDTH;
     const length = (bbox.max.z - bbox.min.z) + BORDER_WIDTH;
 
@@ -116,13 +115,14 @@ function populateActivities(activities, year) {
         const activityDate = new Date(activity.start_date);
 
         let position = getPositionFromDay(activityDate);
+        console.log(activityDate, position);
 
         // Create block
         const height = activity.distance / 10000; // 10km = 1unit
         const geometry = new BoxGeometry(0.9, height, 0.9);
         var cube = new Mesh( geometry, activitiesMaterial );
 
-        cube.position.set(position.x , height/2, position.y);
+        cube.position.set(position.x , BASE_HEIGHT/2, position.y);
         activityGroup.add( cube );
         addWireframe(cube)
     })
@@ -141,12 +141,6 @@ function showActivityPlaceholder(year) {
     }
     scene.add(dayPlaceholderGroup);
     dayPlaceholderGroup.position.set(-(7/2) + 0.5, 0, -year.getNumberOfWeeks()/2 +0.5); // Center placeholders
-}
-
-function display(activities, year) {
-    showActivityPlaceholder(year);
-    createBottom(dayPlaceholderGroup);
-    populateActivities(activities, year);
 }
 
 function animate() {
@@ -191,4 +185,7 @@ showActivityPlaceholder(year);
 createBottom(dayPlaceholderGroup);
 
 let activities = await loadData(yearStr);
-populateActivities(activities, year);
+let firstActivity = new Array();
+firstActivity.push(activities[activities.length - 1]);
+firstActivity.push(activities[activities.length - 2]);
+populateActivities(firstActivity, year);

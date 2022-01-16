@@ -70,7 +70,16 @@ async function getYearResult(req, year) {
         after: startDate.getTime() / 1000,
         before: endDate.getTime() / 1000
     });
-    return payload;
+
+    let activities = new Array();
+    payload.forEach(activity => {
+        let simpleActivity = {
+            "start_date": activity.start_date,
+            "distance": activity.distance
+        }
+        activities.push(simpleActivity);
+    });
+    return activities;
 }
 
 app.get("/login", function (req, res) {
