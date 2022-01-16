@@ -72,12 +72,20 @@ async function getYearResult(req, year) {
     });
 
     let activities = new Array();
+    lastActivity = null;
     payload.forEach(activity => {
-        let simpleActivity = {
-            "start_date": activity.start_date,
-            "distance": activity.distance
+        // Special case if there is multiple activities in the same day
+        if (lastActivity && sameDay(lastActivity.start_date, activity.start_date)) {
+            lastActivity.distance = parseFloat(activity.distance) + parseFloat(lastActivity.distance)
         }
-        activities.push(simpleActivity);
+        else {
+            let simpleActivity = {
+                "start_date": activity.start_date,
+                "distance": activity.distance
+            }
+            activities.push(simpleActivity);
+            lastActivity = simpleActivity;
+        }        
     });
     return activities;
 }
@@ -116,3 +124,12 @@ app.get("/exchange_token", (req, res) => {
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
 });
+
+
+const sameDay = (first, second) => {
+    var firstDay = new Date(first);
+    var secondDay = new Date(second);
+    return firstDay.getMonth() === secondDay.getMonth() && firstDay.getDate() === secondDay.getDate()
+}
+
+// 49930.4

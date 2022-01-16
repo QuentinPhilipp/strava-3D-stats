@@ -115,14 +115,13 @@ function populateActivities(activities, year) {
         const activityDate = new Date(activity.start_date);
 
         let position = getPositionFromDay(activityDate);
-        console.log(activityDate, position);
 
         // Create block
         const height = activity.distance / 10000; // 10km = 1unit
         const geometry = new BoxGeometry(0.9, height, 0.9);
         var cube = new Mesh( geometry, activitiesMaterial );
 
-        cube.position.set(position.x , BASE_HEIGHT/2, position.y);
+        cube.position.set(position.x , BASE_HEIGHT/2 + height/2, position.y);
         activityGroup.add( cube );
         addWireframe(cube)
     })
@@ -169,7 +168,7 @@ async function loadData(year) {
     let url = "/data?year="+year;
     const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data.rawData;
 }
 
@@ -185,7 +184,5 @@ showActivityPlaceholder(year);
 createBottom(dayPlaceholderGroup);
 
 let activities = await loadData(yearStr);
-let firstActivity = new Array();
-firstActivity.push(activities[activities.length - 1]);
-firstActivity.push(activities[activities.length - 2]);
-populateActivities(firstActivity, year);
+
+populateActivities(activities, year);
