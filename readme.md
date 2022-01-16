@@ -1,3 +1,3 @@
 ## Strava 3D stats
 
-[Preview](Strava.gif)
+strava-stats.quentinp.me
