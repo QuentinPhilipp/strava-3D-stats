@@ -64,16 +64,41 @@ app.get("/data", async (req, res) => {
 async function getYearResult(req, year) {
     const startDate = new Date(year,0,1);  //month 0 = January
     const endDate = new Date(year,11,31,23,59,59);
+
+    const maxRequestPerPage = 100;
+    const maxRetry = 10; 
+
     let stravaClient = new strava.client(req.session.access_token);
-    const payload = await stravaClient.athlete.listActivities({
-        per_page: 100,
+
+    var activities = new Array();
+    let activityResponse = await stravaClient.athlete.listActivities({
+        per_page: maxRequestPerPage,
         after: startDate.getTime() / 1000,
         before: endDate.getTime() / 1000
     });
+    activities.push(...activityResponse);
 
-    let activities = new Array();
+    // If there is 100 activities returned, there might be more activities to fetch. Continue to fetch 
+    // until the returned payload is not the same size as the requested size.
+    let retryCount = 0;
+    while ((activityResponse.length == maxRequestPerPage) && (maxRetry>retryCount)) {
+        activityResponse = await stravaClient.athlete.listActivities({
+            per_page: maxRequestPerPage,
+            after: startDate.getTime() / 1000,
+            before: endDate.getTime() / 1000,
+            page: retryCount + 2  // Page 1 already requested before the while loop
+        });
+        activities.push(...activityResponse);
+        retryCount = retryCount + 1;
+    }
+    return processActivities(activities);
+}
+
+
+function processActivities(activities) {
+    var activitiesProcessed = new Array();
     lastActivity = null;
-    payload.forEach(activity => {
+    activities.forEach(activity => {
         // Special case if there is multiple activities in the same day
         if (lastActivity && sameDay(lastActivity.start_date, activity.start_date)) {
             lastActivity.distance = parseFloat(activity.distance) + parseFloat(lastActivity.distance)
@@ -83,12 +108,13 @@ async function getYearResult(req, year) {
                 "start_date": activity.start_date,
                 "distance": activity.distance
             }
-            activities.push(simpleActivity);
+            activitiesProcessed.push(simpleActivity);
             lastActivity = simpleActivity;
         }        
     });
-    return activities;
+    return activitiesProcessed;
 }
+
 
 app.get("/login", function (req, res) {
     res.redirect(strava.oauth.getRequestAccessURL({scope: "activity:read_all"}));
