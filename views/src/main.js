@@ -10,12 +10,17 @@ import {
     LineSegments,
     Group,
     Box3,
+    TextGeometry,
+    FontLoader,
+    ExtrudeGeometry, 
+    Shape,
+    Vector2,
   } from "../three/build/three.module.js";
   
 import { OrbitControls } from "../three/examples/jsm/controls/OrbitControls.js";
 
 const BORDER_WIDTH = 2;
-const BASE_HEIGHT = 1;
+const BASE_HEIGHT = 4;
 
 const renderer = new WebGLRenderer();
 document.body.appendChild( renderer.domElement );
@@ -37,11 +42,14 @@ const controls = new OrbitControls( camera, renderer.domElement );
 // Object groups
 var activityGroup = new Group();
 var dayPlaceholderGroup = new Group();
+var logoGroup = new Group();
+
 
 // Materials
-const activitiesMaterial = new MeshBasicMaterial( { color: 0xff0000 } );
-const baseMaterial = new MeshBasicMaterial( { color: 0xa6a6a6 } );
 const placeholderMaterial = new MeshBasicMaterial( { color: 0x707070 } );
+const stravaMaterial = new MeshBasicMaterial( { color: 0xFC4C02 } );
+const stravaLogoTopMaterial = new MeshBasicMaterial( { color: 0xffffff } );
+const stravaLogoBottomMaterial = new MeshBasicMaterial( { color: 0xfdb79a } );
 
 
 function addWireframe(cube) {
@@ -52,19 +60,85 @@ function addWireframe(cube) {
     cube.add( wireframe );
 }
 
-
-function createBottom(tiles) {
+function createBottom(tiles, username) {
+    // Base
     let bbox = new Box3().setFromObject(tiles);
- 
+
     const width = (bbox.max.x - bbox.min.x) + BORDER_WIDTH;
     const length = (bbox.max.z - bbox.min.z) + BORDER_WIDTH;
 
+    // Base
     const bottomGeometry = new BoxGeometry(width, BASE_HEIGHT, length);
-    let center = new Mesh( bottomGeometry, baseMaterial);
-    center.position.set((Math.abs(bbox.max.x) - Math.abs(bbox.min.x)) / 2, 0, (Math.abs(bbox.max.z) - Math.abs(bbox.min.z)) / 2);
+    let baseMesh = new Mesh( bottomGeometry, stravaMaterial);
+    baseMesh.position.set((Math.abs(bbox.max.x) - Math.abs(bbox.min.x)) / 2, -BASE_HEIGHT/2, (Math.abs(bbox.max.z) - Math.abs(bbox.min.z)) / 2);
 
-    scene.add( center );
-    addWireframe(center);
+    scene.add( baseMesh );
+    addWireframe(baseMesh);
+
+
+    // Logo
+    const extrudeSettings = { depth: 3, bevelEnabled: false, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
+
+    const stravaLogoTop = [];
+    const stravaLogoBottom = [];
+
+    stravaLogoTop.push( new Vector2( 0, 0 ) );
+    stravaLogoTop.push( new Vector2( 42, 0 ) );
+    stravaLogoTop.push( new Vector2( 70, 55 ) );
+    stravaLogoTop.push( new Vector2( 98, 0 ) );
+    stravaLogoTop.push( new Vector2( 140, 0 ) );
+    stravaLogoTop.push( new Vector2( 70, 140 ) );
+    stravaLogoTop.push( new Vector2( 0, 0 ) );
+
+    stravaLogoBottom.push( new Vector2( 62, 0 ) );
+    stravaLogoBottom.push( new Vector2( 98, 0 ) );
+    stravaLogoBottom.push( new Vector2( 120, -38 ) );
+    stravaLogoBottom.push( new Vector2( 140, 0 ) );
+    stravaLogoBottom.push( new Vector2( 176, 0 ) );
+    stravaLogoBottom.push( new Vector2( 120, -98 ) );
+    stravaLogoBottom.push( new Vector2( 62, 0 ) );
+
+    for ( let i = 0; i < stravaLogoTop.length; i ++ ) stravaLogoTop[ i ].multiplyScalar( 0.25 );
+    for ( let i = 0; i < stravaLogoBottom.length; i ++ ) stravaLogoBottom[ i ].multiplyScalar( 0.25 );
+
+    const stravaLogoTopShape = new Shape( stravaLogoTop );
+    const stravaLogoBottomShape = new Shape( stravaLogoBottom );
+
+    let geometryLogoTop = new ExtrudeGeometry( stravaLogoTopShape, extrudeSettings );
+    let geometryLogoBottom = new ExtrudeGeometry( stravaLogoBottomShape, extrudeSettings );
+
+    let meshTop = new Mesh( geometryLogoTop, stravaLogoTopMaterial );
+    let meshBottom = new Mesh( geometryLogoBottom, stravaLogoBottomMaterial );
+    logoGroup.add(meshTop);
+    logoGroup.add(meshBottom);
+
+    // Name
+    const loader = new FontLoader();
+    loader.load( '../three/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
+        const size = 50;
+
+        const geometry = new TextGeometry( username, {
+            font: font,
+            size: size,
+            height: 3,
+            curveSegments: 6,
+            bevelEnabled: true,
+            bevelThickness: 0.03,
+            bevelSize: 0.02,
+            bevelOffset: 0,
+            bevelSegments: 4
+        } );
+        var name3D = new Mesh( geometry, stravaLogoTopMaterial);
+        // name3D.rotation.y = -90 * (Math.PI/180);
+        name3D.position.set(70, -20, 0);
+        logoGroup.add(name3D);
+    } );
+
+    logoGroup.position.set( -4.51, -BASE_HEIGHT/2, -23);
+    logoGroup.rotation.set( 0, -90 * (Math.PI/180), 0 );
+    logoGroup.scale.set( 0.05, 0.05, 0.05 );
+    scene.add( logoGroup );
+
 }
 
 function getPositionFromDay(day) {
@@ -104,7 +178,7 @@ function addDayPlaceholder(day) {
     const geometry = new BoxGeometry(1, 0.1, 1);
     var cube = new Mesh( geometry, placeholderMaterial );
     let position = getPositionFromDay(day);
-    cube.position.set(position.x, 0.5, position.y);
+    cube.position.set(position.x, 0, position.y);
     dayPlaceholderGroup.add( cube );
     addWireframe(cube);
 }
@@ -119,9 +193,9 @@ function populateActivities(activities, year) {
         // Create block
         const height = activity.distance / 10000; // 10km = 1unit
         const geometry = new BoxGeometry(0.9, height, 0.9);
-        var cube = new Mesh( geometry, activitiesMaterial );
+        var cube = new Mesh( geometry, stravaMaterial );
 
-        cube.position.set(position.x , BASE_HEIGHT/2 + height/2, position.y);
+        cube.position.set(position.x , height/2, position.y);
         activityGroup.add( cube );
         addWireframe(cube)
     })
@@ -174,14 +248,15 @@ async function loadData(year) {
 
 let dataElt = document.getElementById("year-container");
 let yearStr = dataElt.getAttribute("value");
+let username = dataElt.getAttribute("user");
 
-camera.position.set( 7/2, 20, 50 );
+camera.position.set( -50, 30, 0 );
 controls.update();
 animate();
 
 let year = new Date(yearStr, 0, 1)
 showActivityPlaceholder(year);
-createBottom(dayPlaceholderGroup);
+createBottom(dayPlaceholderGroup, username);
 
 let activities = await loadData(yearStr);
 

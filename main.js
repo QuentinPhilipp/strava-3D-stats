@@ -27,6 +27,9 @@ function isAuth(req) {
         return true;
     }
     if (process.env.SKIP_STRAVA_REQUEST == "true") {
+        req.session.selectedYear = process.env.TEST_YEAR;
+        req.session.athlete = {};
+        req.session.athlete.username = "username"
         return true;
     }
     return false;
@@ -52,7 +55,7 @@ app.get("/", async function (req, res) {
         req.session.selectedYear = null;
     }        
     else {
-        res.render("data", {selectedYear: selectedYear});
+        res.render("data", {selectedYear: selectedYear, user: req.session.athlete.username});
     }
 });
 
@@ -166,5 +169,3 @@ const sameDay = (first, second) => {
     var secondDay = new Date(second);
     return firstDay.getMonth() === secondDay.getMonth() && firstDay.getDate() === secondDay.getDate()
 }
-
-// 49930.4
