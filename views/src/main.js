@@ -23,7 +23,7 @@ const BORDER_WIDTH = 2;
 const BASE_HEIGHT = 4;
 
 const renderer = new WebGLRenderer();
-document.body.appendChild( renderer.domElement );
+document.querySelector('#mainCanva').appendChild(renderer.domElement);
 
 // Set size
 window.addEventListener( 'resize', onWindowResize, false );
@@ -246,18 +246,44 @@ async function loadData(year) {
     return data.rawData;
 }
 
-let dataElt = document.getElementById("year-container");
-let yearStr = dataElt.getAttribute("value");
-let username = dataElt.getAttribute("user");
+function wipeData() {
+    for (var i=activityGroup.children.length-1; i >= 0; --i)            
+        activityGroup.remove(activityGroup.children[i]);
+    for (var i=dayPlaceholderGroup.children.length-1; i >= 0; --i)            
+    dayPlaceholderGroup.remove(dayPlaceholderGroup.children[i]);
+}
 
-camera.position.set( -50, 30, 0 );
-controls.update();
-animate();
+async function start() {
+    let dataElt = document.getElementById("year-container");
+    let yearStr = dataElt.getAttribute("value");
+    let username = dataElt.getAttribute("user");
+    setup(yearStr, username);
+}
 
-let year = new Date(yearStr, 0, 1)
-showActivityPlaceholder(year);
-createBottom(dayPlaceholderGroup, username);
+async function restart() {
+    let year = document.getElementById("year");
+    let dataElt = document.getElementById("year-container");
+    let username = dataElt.getAttribute("user");
+    wipeData();
+    setup(year.value, username);
+}
 
-let activities = await loadData(yearStr);
+async function setup(yearStr, username) {
+    camera.position.set( -50, 30, 0 );
+    controls.update();
+    animate();
+    
+    let year = new Date(yearStr, 0, 1)
+    showActivityPlaceholder(year);
+    createBottom(dayPlaceholderGroup, username);
+    
+    let activities = await loadData(yearStr);
+    
+    populateActivities(activities, year);
+}
 
-populateActivities(activities, year);
+window.addEventListener('load', function() {
+    start();
+    let yearBtn = document.getElementById("year-button");
+    yearBtn.onclick = restart;
+})

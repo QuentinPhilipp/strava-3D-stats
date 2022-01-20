@@ -8,6 +8,8 @@ const port = 8081;
 
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, 'views')));
+app.use("/styles", express.static(path.join(__dirname, 'views/styles')))
+
 require('dotenv').config()
 
 strava.config.redirect_uri = process.env.STRAVA_REDIRECT_URI;
@@ -30,6 +32,8 @@ function isAuth(req) {
         req.session.selectedYear = process.env.TEST_YEAR;
         req.session.athlete = {};
         req.session.athlete.username = "username"
+        req.session.athlete.created_at = "2015"
+        console.log("Skip authentication");
         return true;
     }
     return false;
@@ -37,6 +41,9 @@ function isAuth(req) {
 
 app.get("/", async function (req, res) {
     let selectedYear = req.query.year
+    let years = new Array();
+    let endDate = new Date().getFullYear();
+
     if (selectedYear) {
         req.session.selectedYear = selectedYear;
     }
@@ -45,8 +52,6 @@ app.get("/", async function (req, res) {
         req.session.selectedYear = null;
     }
     else if (!req.session.selectedYear){
-        let years = new Array();
-        let endDate = new Date().getFullYear();
         let startDate = new Date(req.session.athlete.created_at).getFullYear();
         for (var i = startDate; i <= endDate; i++) {
             years.push(i)
@@ -55,14 +60,20 @@ app.get("/", async function (req, res) {
         req.session.selectedYear = null;
     }        
     else {
-        res.render("data", {selectedYear: selectedYear, user: req.session.athlete.username});
+        let startDate = new Date(req.session.athlete.created_at).getFullYear();
+        for (var i = startDate; i <= endDate; i++) {
+            years.push(i)
+        }
+        res.render("data", {selectedYear: selectedYear, user: req.session.athlete.username, availableYears: years.reverse()});
     }
 });
 
 app.get("/data", async (req, res) => {
-    selectedYear = req.session.selectedYear;
+    selectedYear = req.query.year;
     if (process.env.SKIP_STRAVA_REQUEST == "true") {
-        result = await getFakeResult(process.env.TEST_YEAR);
+        console.log("Searching fake data for", selectedYear);
+        result = await getFakeResult(selectedYear);
+
     }
     else {
         result = await getYearResult(req, selectedYear);

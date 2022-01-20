@@ -5,14 +5,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strava Stats</title>
-    <style>
-        body { margin: 0; }
-        canvas { width: 100%; height: 100%;}
-    </style>
-    <link href="./styles/main.css" type="text/css">
+    <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
     <data id="year-container" value="{{selectedYear}}" user="{{user}}"></data>
+    
+    <div id='mainCanva'>
+        <div id="year-selector">
+            <select name="year" id="year">
+                {{#each availableYears}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select> 
+            <button id="year-button">Create</button>
+        </div>
+    </div>
     <script type="module" src="./src/main.js"></script>
 </body>
 </html>
