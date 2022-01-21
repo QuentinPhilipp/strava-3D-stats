@@ -20,7 +20,11 @@ app.use(session({
     },
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        // Expire after 1h
+        expire: 60000 * 60
+    }
 }))
 
 
@@ -40,35 +44,23 @@ function isAuth(req) {
 }
 
 app.get("/", async function (req, res) {
-    let selectedYear = req.query.year
-    let years = new Array();
-    let endDate = new Date().getFullYear();
-
-    if (selectedYear) {
-        req.session.selectedYear = selectedYear;
-    }
     if (!isAuth(req)) {
         res.render("index", {authenticated: false});
         req.session.selectedYear = null;
-    }
-    else if (!req.session.selectedYear){
-        let startDate = new Date(req.session.athlete.created_at).getFullYear();
-        for (var i = startDate; i <= endDate; i++) {
-            years.push(i)
-        }
-        res.render("index", {authenticated: true, username: req.session.athlete.firstname, availableYears: years.reverse()});
-        req.session.selectedYear = null;
-    }        
+    }  
     else {
+        let years = new Array();
+        let endDate = new Date().getFullYear();    
         let startDate = new Date(req.session.athlete.created_at).getFullYear();
         for (var i = startDate; i <= endDate; i++) {
             years.push(i)
         }
-        res.render("data", {selectedYear: selectedYear, user: req.session.athlete.username, availableYears: years.reverse()});
+        res.render("data", {user: req.session.athlete.username, availableYears: years.reverse()});
     }
 });
 
 app.get("/data", async (req, res) => {
+    console.log("Request data", req.query.year)
     selectedYear = req.query.year;
     if (process.env.SKIP_STRAVA_REQUEST == "true") {
         console.log("Searching fake data for", selectedYear);

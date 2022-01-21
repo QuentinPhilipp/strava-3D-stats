@@ -51,6 +51,9 @@ const stravaMaterial = new MeshBasicMaterial( { color: 0xFC4C02 } );
 const stravaLogoTopMaterial = new MeshBasicMaterial( { color: 0xffffff } );
 const stravaLogoBottomMaterial = new MeshBasicMaterial( { color: 0xfdb79a } );
 
+camera.position.set( -50, 30, 0 );
+controls.update();
+animate();
 
 function addWireframe(cube) {
     var geo = new EdgesGeometry( cube.geometry );
@@ -253,31 +256,32 @@ function wipeData() {
     dayPlaceholderGroup.remove(dayPlaceholderGroup.children[i]);
 }
 
-async function start() {
-    let dataElt = document.getElementById("year-container");
-    let yearStr = dataElt.getAttribute("value");
+function getUsername() {
+    let dataElt = document.getElementById('data-container');
     let username = dataElt.getAttribute("user");
-    setup(yearStr, username);
+    return username
 }
 
 async function restart() {
     let year = document.getElementById("year");
-    let dataElt = document.getElementById("year-container");
-    let username = dataElt.getAttribute("user");
     wipeData();
-    setup(year.value, username);
+    let yearObj = new Date(year.value, 0, 1);
+    setup(yearObj, getUsername());
 }
 
-async function setup(yearStr, username) {
-    camera.position.set( -50, 30, 0 );
-    controls.update();
-    animate();
-    
-    let year = new Date(yearStr, 0, 1)
+async function start() {
+    // Start with the past year
+    let today = new Date();
+    let year = new Date(today.getFullYear()-1, 0, 1);
+    setup(year, getUsername());
+}
+
+async function setup(year, username) {    
+
     showActivityPlaceholder(year);
     createBottom(dayPlaceholderGroup, username);
     
-    let activities = await loadData(yearStr);
+    let activities = await loadData(year.getFullYear());
     
     populateActivities(activities, year);
 }
