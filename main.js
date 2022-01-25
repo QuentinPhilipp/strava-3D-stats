@@ -60,7 +60,6 @@ app.get("/", async function (req, res) {
 });
 
 app.get("/data", async (req, res) => {
-    console.log("Request data", req.query.year)
     selectedYear = req.query.year;
     if (process.env.SKIP_STRAVA_REQUEST == "true") {
         console.log("Searching fake data for", selectedYear);
