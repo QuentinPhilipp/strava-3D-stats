@@ -245,8 +245,14 @@ async function loadData(year) {
     let url = "/data?year="+year;
     const response = await fetch(url);
     const data = await response.json();
-    // console.log(data);
-    return data.rawData;
+    if (data.status === "success") {
+        // console.log(data);
+        return data.rawData;
+    }
+    else {
+        console.log("Error:", data.errorDesc)
+        return [];
+    }
 }
 
 function wipeData() {

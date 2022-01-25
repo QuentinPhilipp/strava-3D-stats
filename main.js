@@ -61,18 +61,29 @@ app.get("/", async function (req, res) {
 
 app.get("/data", async (req, res) => {
     selectedYear = req.query.year;
-    if (process.env.SKIP_STRAVA_REQUEST == "true") {
-        console.log("Searching fake data for", selectedYear);
-        result = await getFakeResult(selectedYear);
-
-    }
-    else if (req.session[selectedYear]) {
-        result = req.session[selectedYear];
+    let rateLimit = strava.rateLimiting.fractionReached()
+    console.log("Rate limit before the request:", rateLimit);
+    if (isNaN(rateLimit) || rateLimit < 0.98) {
+        if (process.env.SKIP_STRAVA_REQUEST == "true") {
+            console.log("Searching fake data for", selectedYear);
+            result = await getFakeResult(selectedYear);
+    
+        }
+        else if (req.session[selectedYear]) {
+            result = req.session[selectedYear];
+        }
+        else {
+            result = await getYearResult(req, selectedYear);
+        }
+        res.json({rawData: result, status: "success"});
     }
     else {
-        result = await getYearResult(req, selectedYear);
+        res.json({
+            rawData: [], 
+            status: 'error',
+            errorDesc: "Too many API calls, try again later"
+        })
     }
-    res.json({rawData: result});
 })
 
 async function getYearResult(req, year) {
