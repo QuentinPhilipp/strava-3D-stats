@@ -145,6 +145,15 @@ app.get("/login", function (req, res) {
     res.redirect(strava.oauth.getRequestAccessURL({scope: "activity:read_all"}));
 });
 
+app.get("/logout", async function (req, res) {
+    response = await strava.oauth.deauthorize({access_token: req.session.access_token});
+    if (response.access_token && response.access_token == req.session.access_token) {
+        req.session.destroy();
+    }
+    res.redirect("/");
+});
+
+
 app.get("/exchange_token", (req, res) => {
     // Get short-lived access_token from Strava based on received code and scope
     let authenticationCode = req.query.code;
