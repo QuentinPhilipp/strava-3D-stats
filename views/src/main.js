@@ -15,6 +15,10 @@ import {
     ExtrudeGeometry, 
     Shape,
     Vector2,
+    Color,
+    PlaneGeometry,
+    ShadowMaterial,
+    GridHelper
   } from "../three/build/three.module.js";
   
 import { OrbitControls } from "../three/examples/jsm/controls/OrbitControls.js";
@@ -36,8 +40,16 @@ function onWindowResize(){
 }
 
 const scene = new Scene();
+scene.background = new Color( 0x0f0f0f );
 const camera = new PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
 const controls = new OrbitControls( camera, renderer.domElement );
+
+let stravaColor = new Color(0xFC4C02);
+const helper = new GridHelper( 2000, 150 ,stravaColor, stravaColor);
+helper.position.y = - 9;
+helper.material.opacity = 0.25;
+helper.material.transparent = true;
+scene.add( helper );
 
 // Object groups
 var activityGroup = new Group();
@@ -296,4 +308,7 @@ window.addEventListener('load', function() {
     start();
     let yearBtn = document.getElementById("year-button");
     yearBtn.onclick = restart;
+
+    // Default value is the last year
+    document.getElementById("year").options[1].selected = true;
 })

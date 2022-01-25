@@ -1,9 +1,12 @@
 body {
     margin: 0;
+    --strava-color:#FC4C02;
 }
 canvas {
     width: 100%;
     height: 100%;
+    background: rgb(36,31,115);
+    background: radial-gradient(circle, rgba(36,31,115,1) 0%, rgba(153,3,33,1) 100%); 
 }
 
 #mainCanva {
@@ -12,13 +15,62 @@ canvas {
 }
 #year-selector {
     position: absolute;
-    padding: 15px;
     color: #fff;
+    padding: 1px 0px;
     margin-left: 50vw;
     margin-top: 80vh;
     transform: translate(-50%, -50%);
+    border: 1px solid var(--strava-color);
+    border-radius: 15px;
+    font-family: Helvetica, sans-serif;
 }
 
 #year {
-    padding: 10px;
+    padding: .9rem 0.15rem .9rem 1.5rem;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    margin-right:1.5rem;
 }
+
+#year option{
+    color: #000;
+}
+
+#year-button {
+    padding: 0.9rem 1.5rem;
+    border: 1px solid var(--strava-color);
+    background-color: var(--strava-color);
+    /* border-radius: 15px 0 0 15px; */
+    border-radius: 15px;
+}
+
+.logo-button {
+    position: fixed;
+    padding: 12px;
+    border-radius: 50%;
+    margin-bottom: 0px;
+    background-color: white;
+    opacity: 0.9;
+    z-index:100;
+    box-shadow:0 0 4px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+#code-button {
+    bottom: 16px;
+    right: 16px;
+}
+
+#logout-button {
+    bottom: 16px;
+    right: 75px;
+}
+
+.logo {
+    display:block;
+}
+/* background-color: rgba(255, 255, 255, 0.15);
+backdrop-filter: blur(5px);
+color: #fff; */
