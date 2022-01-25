@@ -67,6 +67,9 @@ app.get("/data", async (req, res) => {
         result = await getFakeResult(selectedYear);
 
     }
+    else if (req.session[selectedYear]) {
+        result = req.session[selectedYear];
+    }
     else {
         result = await getYearResult(req, selectedYear);
     }
@@ -103,7 +106,13 @@ async function getYearResult(req, year) {
         activities.push(...activityResponse);
         retryCount = retryCount + 1;
     }
+    processedActivities = processActivities(activities);
+    addToCache(processedActivities, year, req.session)
     return processActivities(activities);
+}
+
+function addToCache(data, year, session) {
+    session[year] = data;
 }
 
 async function getFakeResult(year) {
