@@ -267,6 +267,20 @@ async function loadData(year) {
     }
 }
 
+async function loadExampleData() {
+    let url = "/coverdata";
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.status === "success") {
+        // console.log(data);
+        return data.rawData;
+    }
+    else {
+        console.log("Error:", data.errorDesc)
+        return [];
+    }
+}
+
 function wipeData() {
     for (var i=activityGroup.children.length-1; i >= 0; --i)            
         activityGroup.remove(activityGroup.children[i]);
@@ -304,11 +318,26 @@ async function setup(year, username) {
     populateActivities(activities, year);
 }
 
-window.addEventListener('load', function() {
-    start();
-    let yearBtn = document.getElementById("year-button");
-    yearBtn.onclick = restart;
+async function demoSetup() {
+    showActivityPlaceholder(new Date());
+    createBottom(dayPlaceholderGroup, "YourName");
+    
+    let activities = await loadExampleData();
+    
+    populateActivities(activities, new Date());
+}
 
-    // Default value is the last year
-    document.getElementById("year").options[1].selected = true;
+window.addEventListener('load', function() {
+    let loginElt = document.getElementById("login-container");
+    if (loginElt) {
+        demoSetup();
+    }
+    else {
+        start();
+        let yearBtn = document.getElementById("year-button");
+        yearBtn.onclick = restart;
+    
+        // Default value is the last year
+        document.getElementById("year").options[1].selected = true;
+    }
 })

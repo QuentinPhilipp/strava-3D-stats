@@ -59,6 +59,11 @@ app.get("/", async function (req, res) {
     }
 });
 
+app.get("/coverdata", async (req, res) => {
+    result = await getFakeResult("2021");
+    res.json({rawData: result, status: "success"});
+})
+
 app.get("/data", async (req, res) => {
     selectedYear = req.query.year;
     let rateLimit = strava.rateLimiting.fractionReached()

@@ -5,21 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strava Stats</title>
+    <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
-    {{#if authenticated}} 
-    <form action="/" method="get">
-        <label for="year">Welcome {{username}} | Choose a year:</label>
-        <select name="year" id="year">
-            {{#each availableYears}}
-            <option value="{{this}}">{{this}}</option>
-            {{/each}}
-        </select> 
-        <button type="submit" id="yearButton">Create</button>
-    </form>
-    {{else}}
-        <a href="/login">Login</a>
-    {{/if}}
+    <div id='mainCanva'>
+        <div id="login-container">
+            <a id="login-button" href="/login">
+                <img class="logo" src="/styles/connectWithStrava.png">
+            </a>
+        </div>
+        <a id="code-button" class="logo-button" target="_blank" style="" href="https://github.com/QuentinPhilipp/strava-3D-stats" title="Check code source on GitHub">
+            <img class="logo" src="/styles/code.svg">
+        </a>
+        <a class="poweredBy" target="_blank" style="" href="https://strava.com/" title="Powered by Strava">
+            <img class="logo" src="/styles/pwrdByStrava.png">
+        </a>
+    </div>
+    <script type="module" src="./src/main.js"></script>
 
 </body>
 </html>

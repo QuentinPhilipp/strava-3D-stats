@@ -13,6 +13,20 @@ canvas {
     position: relative;
     text-align: center;
 }
+
+#login-container {
+    position: absolute;
+    color: #fff;
+    padding: 1px 0px;
+    margin-left: 50vw;
+    margin-top: 50vh;
+    transform: translate(-50%, -50%);
+    /* padding: 12rem 8rem;
+    background-color: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(15px);
+    color: #fff;  */
+}
+
 #year-selector {
     position: absolute;
     color: #fff;
@@ -68,9 +82,16 @@ canvas {
     right: 75px;
 }
 
+.poweredBy {
+    position: fixed;
+    margin-top: 95vh;
+    padding: 12px;
+    border-radius: 50%;
+    z-index:100;
+    box-sizing: border-box;
+    transform: translate(-50%, -50%);
+}
+
 .logo {
     display:block;
 }
-/* background-color: rgba(255, 255, 255, 0.15);
-backdrop-filter: blur(5px);
-color: #fff; */
