@@ -208,7 +208,11 @@ async function populateActivities(activities, year) {
 
     let activityAddDelay = 1000/activities.length
 
-    let metric = document.getElementById("metric").value;
+    let metricSelector = document.getElementById("metric")
+    let metric = "distance";
+    if (metricSelector) {
+        metric = metricSelector.value;
+    }
     for (let index = activities.length -1; index >= 0; index--) {
         const activity = activities[index];
         const activityDate = new Date(activity.start_date);
@@ -362,13 +366,16 @@ window.addEventListener('load', function() {
 
 const screenshot = document.getElementById('screenshot');
 
-screenshot.addEventListener('click', function(e) {
-    let canvas = document.getElementById("3d-canva");
-    var context = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
+if (screenshot) {
+    screenshot.addEventListener('click', function(e) {
+        let canvas = document.getElementById("3d-canva");
+        var context = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
+    
+        const link = document.createElement('a');
+        link.download = 'strava3D.png';
+        link.href = canvas.toDataURL();
+        link.click();
+        link.delete;
+      });
+}
 
-    const link = document.createElement('a');
-    link.download = 'strava3D.png';
-    link.href = canvas.toDataURL();
-    link.click();
-    link.delete;
-  });
