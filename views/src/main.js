@@ -196,9 +196,16 @@ function addDayPlaceholder(day) {
     addWireframe(cube);
 }
 
-function populateActivities(activities, year) {
+const timer = ms => new Promise(res => setTimeout(res, ms))
 
-    activities.forEach( function(activity) {
+async function populateActivities(activities, year) {
+    activityGroup.position.set(-(7/2) + 0.5, 0, -year.getNumberOfWeeks()/2 +0.5);  // Center activities
+    scene.add(activityGroup);
+
+    let activityAddDelay = 1000/activities.length
+
+    for (let index = activities.length -1; index >= 0; index--) {
+        const activity = activities[index];
         const activityDate = new Date(activity.start_date);
 
         let position = getPositionFromDay(activityDate);
@@ -209,13 +216,10 @@ function populateActivities(activities, year) {
         var cube = new Mesh( geometry, stravaMaterial );
 
         cube.position.set(position.x , height/2, position.y);
-        activityGroup.add( cube );
-        addWireframe(cube)
-    })
-
-    activityGroup.position.set(-(7/2) + 0.5, 0, -year.getNumberOfWeeks()/2 +0.5);  // Center activities
-
-    scene.add(activityGroup);
+        activityGroup.add(cube);
+        addWireframe(cube);
+        await timer(activityAddDelay);
+    }
 }
 
 

@@ -1,6 +1,7 @@
 body {
     margin: 0;
     --strava-color:#FC4C02;
+    background-color: black;
 }
 canvas {
     width: 100%;
@@ -106,6 +107,11 @@ canvas {
     transform: translate(-50%, -50%);
 }
 
+.responsive-logo {
+    max-width: 30vw;
+    height: auto;
+}
+
 .logo {
     display:block;
 }
@@ -115,6 +121,7 @@ canvas {
 
 #popup-mobile {
     position: absolute;
+    visibility:visible;
     color: #000;
     padding: 2rem 3rem;
     background:white;
@@ -139,14 +146,8 @@ canvas {
     color: #333;
   }
 
-@media screen and (max-width : 1920px){
-    #popup-mobile {
-        visibility:hidden;
-    }
-}
-
-@media screen and (max-width : 906px){
+@media screen and (min-width : 600px) {
     #popup-mobile{
-        visibility:visible;
+        visibility:hidden;
     }
 }
