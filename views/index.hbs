@@ -4,15 +4,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strava Stats</title>
+    <title>Strava 3D Stats</title>
     <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
+    <div id='popup-mobile'>
+        <a id="close-mobile">&times;</a>
+        <div class="content"></div>
+        This website is optimized for desktop usage.
+        </div>
+    </div>
     <div id='mainCanva'>
-        <div id="login-container">
-            <a id="login-button" href="/login">
-                <img class="logo" src="/styles/connectWithStrava.png">
-            </a>
+        <div id="center-container">
+
+            <div id="login-container">
+
+                <h1 class="title">View the 3D version of your Strava statistics</h1>
+                <a id="login-button" href="/login">
+                    <img class="logo centered" src="/styles/connectWithStrava.png">
+                </a>
+            </div>
         </div>
         <a id="code-button" class="logo-button" target="_blank" style="" href="https://github.com/QuentinPhilipp/strava-3D-stats" title="Check code source on GitHub">
             <img class="logo" src="/styles/code.svg">

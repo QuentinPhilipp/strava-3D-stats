@@ -14,17 +14,31 @@ canvas {
     text-align: center;
 }
 
-#login-container {
+#center-container {
     position: absolute;
     color: #fff;
-    padding: 1px 0px;
     margin-left: 50vw;
-    margin-top: 50vh;
+    margin-top: 30vh;
     transform: translate(-50%, -50%);
-    /* padding: 12rem 8rem;
-    background-color: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(15px);
-    color: #fff;  */
+    padding: 4rem 3rem;
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #fff; 
+}
+
+
+#login-button {
+    width: 100%;
+    display: block;
+}
+
+.title {
+    /* margin-top: 20%; */
+    font-family: Helvetica, sans-serif;
+    margin-bottom: 40px;
+}
+
+.centered {
+    margin: auto;
 }
 
 #year-selector {
@@ -94,4 +108,45 @@ canvas {
 
 .logo {
     display:block;
+}
+
+
+/* MEDIA */
+
+#popup-mobile {
+    position: absolute;
+    color: #000;
+    padding: 2rem 3rem;
+    background:white;
+    display: block;
+    z-index:100;
+    box-sizing: border-box;
+    margin-left: 50%;
+    top: 5vh;
+    transform: translate(-50%, 0);
+    font-family: Helvetica, sans-serif;
+    border-radius: 5px;
+}
+
+#popup-mobile #close-mobile {
+    position: absolute;
+    cursor: pointer;
+    top: 5px;
+    right: 5px;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+  }
+
+@media screen and (max-width : 1920px){
+    #popup-mobile {
+        visibility:hidden;
+    }
+}
+
+@media screen and (max-width : 906px){
+    #popup-mobile{
+        visibility:visible;
+    }
 }

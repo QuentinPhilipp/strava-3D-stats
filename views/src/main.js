@@ -16,8 +16,6 @@ import {
     Shape,
     Vector2,
     Color,
-    PlaneGeometry,
-    ShadowMaterial,
     GridHelper
   } from "../three/build/three.module.js";
   
@@ -340,4 +338,11 @@ window.addEventListener('load', function() {
         // Default value is the last year
         document.getElementById("year").options[1].selected = true;
     }
+    let mobileCloseElt = document.getElementById("close-mobile");
+    mobileCloseElt.onclick = function() {
+        let mobileElt = document.getElementById("popup-mobile");
+        mobileElt.style.visibility = "hidden";
+    }
+
 })
+
