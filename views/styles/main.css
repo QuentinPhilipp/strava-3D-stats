@@ -49,29 +49,39 @@ canvas {
     margin-left: 50vw;
     margin-top: 80vh;
     transform: translate(-50%, -50%);
-    border: 1px solid var(--strava-color);
+    border: 2px solid var(--strava-color);
     border-radius: 15px;
     font-family: Helvetica, sans-serif;
+    overflow: hidden;
 }
 
 #year {
-    padding: .9rem 0.15rem .9rem 1.5rem;
-    background-color: transparent;
-    color: #fff;
-    border: none;
+    padding: .9rem 0.15rem .9rem 1rem;
     margin-right:1.5rem;
 }
 
-#year option{
+#metric {
+    padding: .9rem 0.15rem .9rem 1.5rem;
+}
+
+select#metric option[value="distance"]   { background-image:url(distance.svg);   }
+select#metric option[value="elevation"] { background-image:url(climb.svg); }
+
+.white-option option{
     color: #000;
 }
 
+.transparent-selector {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+}
+
 #year-button {
-    padding: 0.9rem 1.5rem;
+    padding: 1rem 2rem ;
     border: 1px solid var(--strava-color);
     background-color: var(--strava-color);
-    /* border-radius: 15px 0 0 15px; */
-    border-radius: 15px;
+    border-radius: 15px 0 0 15px;
 }
 
 .logo-button {
@@ -108,7 +118,7 @@ canvas {
 }
 
 .responsive-logo {
-    max-width: 30vw;
+    max-width: 200px;
     height: auto;
 }
 
@@ -146,7 +156,7 @@ canvas {
     color: #333;
   }
 
-@media screen and (min-width : 600px) {
+@media screen and (min-width : 700px) {
     #popup-mobile{
         visibility:hidden;
     }

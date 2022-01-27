@@ -204,14 +204,20 @@ async function populateActivities(activities, year) {
 
     let activityAddDelay = 1000/activities.length
 
+    let metric = document.getElementById("metric").value;
     for (let index = activities.length -1; index >= 0; index--) {
         const activity = activities[index];
         const activityDate = new Date(activity.start_date);
 
         let position = getPositionFromDay(activityDate);
-
+        let height = 0;
         // Create block
-        const height = activity.distance / 10000; // 10km = 1unit
+        if (metric == "distance") {
+            height = activity.distance / 10000; // 10km = 1unit
+        }
+        else if (metric == "elevation") {
+            height = activity.elevation / 200; // 200m = 1unit
+        }
         const geometry = new BoxGeometry(0.9, height, 0.9);
         var cube = new Mesh( geometry, stravaMaterial );
 

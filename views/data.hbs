@@ -17,12 +17,17 @@
     </div>
     <div id='mainCanva'>
         <div id="year-selector">
-            <select name="year" id="year">
+            <select name="metric" class="white-option transparent-selector" id="metric">
+                <option selected value="distance">Distance</option>
+                <option value="elevation">Elevation</option>
+            </select> 
+            <select name="year" class="white-option transparent-selector" id="year">
                 {{#each availableYears}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
             </select> 
             <a id="year-button">Create</a>
+
         </div>
         <a id="logout-button" class="logo-button" style="" href="/logout" title="Log out">
             <img class="logo" src="/styles/logout.svg">

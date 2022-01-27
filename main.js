@@ -68,25 +68,34 @@ app.get("/data", async (req, res) => {
     selectedYear = req.query.year;
     let rateLimit = strava.rateLimiting.fractionReached()
     console.log("Rate limit before the request:", rateLimit);
-    if (isNaN(rateLimit) || rateLimit < 0.98) {
-        if (process.env.SKIP_STRAVA_REQUEST == "true") {
-            console.log("Searching fake data for", selectedYear);
-            result = await getFakeResult(selectedYear);
-    
-        }
-        else if (req.session[selectedYear]) {
-            result = req.session[selectedYear];
+    if (selectedYear){
+        if (isNaN(rateLimit) || rateLimit < 0.98) {
+            if (process.env.SKIP_STRAVA_REQUEST == "true") {
+                console.log("Searching fake data for", selectedYear);
+                result = await getFakeResult(selectedYear);
+        
+            }
+            else if (req.session[selectedYear]) {
+                result = req.session[selectedYear];
+            }
+            else {
+                result = await getYearResult(req, selectedYear);
+            }
+            res.json({rawData: result, status: "success"});
         }
         else {
-            result = await getYearResult(req, selectedYear);
+            res.json({
+                rawData: [], 
+                status: 'error',
+                errorDesc: "Too many API calls, try again later"
+            })
         }
-        res.json({rawData: result, status: "success"});
     }
     else {
         res.json({
             rawData: [], 
             status: 'error',
-            errorDesc: "Too many API calls, try again later"
+            errorDesc: "Bad request. 'year' field is missing"
         })
     }
 })
@@ -123,7 +132,7 @@ async function getYearResult(req, year) {
     }
     processedActivities = processActivities(activities);
     addToCache(processedActivities, year, req.session)
-    return processActivities(activities);
+    return processedActivities;
 }
 
 function addToCache(data, year, session) {
@@ -143,11 +152,15 @@ function processActivities(activities) {
         // Special case if there is multiple activities in the same day
         if (lastActivity && sameDay(lastActivity.start_date, activity.start_date)) {
             lastActivity.distance = parseFloat(activity.distance) + parseFloat(lastActivity.distance)
+            lastActivity.moving_time = parseFloat(activity.moving_time) + parseFloat(lastActivity.moving_time)
+            lastActivity.elevation = parseFloat(activity.total_elevation_gain) + parseFloat(lastActivity.elevation)
         }
         else {
             let simpleActivity = {
                 "start_date": activity.start_date,
-                "distance": activity.distance
+                "distance": activity.distance,
+                "moving_time": activity.moving_time,
+                "elevation": activity.total_elevation_gain
             }
             activitiesProcessed.push(simpleActivity);
             lastActivity = simpleActivity;
