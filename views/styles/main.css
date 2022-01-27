@@ -103,11 +103,11 @@ select#metric option[value="elevation"] { background-image:url(climb.svg); }
 }
 
 #logout-button {
-    right: 75px;
+    right: 76px;
 }
 
 #screenshot {
-    right: 135px;
+    right: 136px;
 }
 
 .poweredBy {
