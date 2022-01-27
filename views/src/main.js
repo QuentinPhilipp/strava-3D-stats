@@ -369,11 +369,24 @@ const screenshot = document.getElementById('screenshot');
 if (screenshot) {
     screenshot.addEventListener('click', function(e) {
         let canvas = document.getElementById("3d-canva");
-        var context = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
-    
         const link = document.createElement('a');
+
+        var exportCanvas = document.createElement("canvas");
+        exportCanvas.width = canvas.width;
+        exportCanvas.height = canvas.height;
+
+        var ctx = exportCanvas.getContext('2d');
+        ctx.fillStyle = "#FFF";
+
+        ctx.drawImage(canvas, 0, 0);
+        ctx.fillRect(0, canvas.height - 46, exportCanvas.width, canvas.height)
+        ctx.fillStyle = "#000";
+        ctx.font = '24px sans-serif';
+        var waterMark = "Generated with " + window.location.origin;
+        ctx.fillText(waterMark, 30, canvas.height - 15);
+
         link.download = 'strava3D.png';
-        link.href = canvas.toDataURL();
+        link.href = exportCanvas.toDataURL();
         link.click();
         link.delete;
       });
