@@ -24,8 +24,11 @@ import { OrbitControls } from "../three/examples/jsm/controls/OrbitControls.js";
 const BORDER_WIDTH = 2;
 const BASE_HEIGHT = 4;
 
-const renderer = new WebGLRenderer();
+const renderer = new WebGLRenderer({
+    preserveDrawingBuffer: true 
+});
 document.querySelector('#mainCanva').appendChild(renderer.domElement);
+renderer.domElement.id = "3d-canva";
 
 // Set size
 window.addEventListener( 'resize', onWindowResize, false );
@@ -356,3 +359,15 @@ window.addEventListener('load', function() {
 
 })
 
+const screenshot = document.getElementById('screenshot');
+
+screenshot.addEventListener('click', function(e) {
+    let canvas = document.getElementById("3d-canva");
+    var context = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
+
+    const link = document.createElement('a');
+    link.download = 'strava3D.png';
+    link.href = canvas.toDataURL();
+    link.click();
+    link.delete;
+  });

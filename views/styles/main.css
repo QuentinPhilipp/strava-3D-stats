@@ -91,6 +91,7 @@ select#metric option[value="elevation"] { background-image:url(climb.svg); }
     margin-bottom: 0px;
     background-color: white;
     opacity: 0.9;
+    bottom: 16px;
     z-index:100;
     box-shadow:0 0 4px rgba(0, 0, 0, 0.15);
     box-sizing: border-box;
@@ -98,13 +99,15 @@ select#metric option[value="elevation"] { background-image:url(climb.svg); }
 }
 
 #code-button {
-    bottom: 16px;
     right: 16px;
 }
 
 #logout-button {
-    bottom: 16px;
     right: 75px;
+}
+
+#screenshot {
+    right: 135px;
 }
 
 .poweredBy {
