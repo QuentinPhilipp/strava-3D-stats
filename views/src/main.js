@@ -25,7 +25,8 @@ const BORDER_WIDTH = 2;
 const BASE_HEIGHT = 4;
 
 const renderer = new WebGLRenderer({
-    preserveDrawingBuffer: true 
+    preserveDrawingBuffer: true,
+    antialias: true
 });
 document.querySelector('#mainCanva').appendChild(renderer.domElement);
 renderer.domElement.id = "3d-canva";
