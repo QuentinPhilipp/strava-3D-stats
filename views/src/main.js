@@ -71,7 +71,7 @@ animate();
 
 function addWireframe(cube) {
     var geo = new EdgesGeometry( cube.geometry );
-    var mat = new LineBasicMaterial( { color: 0x000000, linewidth: 10 } );
+    var mat = new LineBasicMaterial( { color: 0x000000, linewidth: 1 } );
     var wireframe = new LineSegments( geo, mat );
     wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
     cube.add( wireframe );
@@ -379,15 +379,15 @@ if (screenshot) {
         ctx.fillStyle = "#FFF";
 
         ctx.drawImage(canvas, 0, 0);
-        ctx.fillRect(0, canvas.height - 46, exportCanvas.width, canvas.height)
-        ctx.fillStyle = "#000";
+        // ctx.fillRect(0, canvas.height - 46, exportCanvas.width, canvas.height)
+        // ctx.fillStyle = "#000";
         ctx.font = '24px sans-serif';
-        var waterMark = "Generated with " + window.location.origin;
+        var waterMark = "Generated with " + window.location.host;
         ctx.fillText(waterMark, 30, canvas.height - 15);
-
+        console.log(exportCanvas.toDataURL());
         link.download = 'strava3D.png';
         link.href = exportCanvas.toDataURL();
-        link.click();
+        // link.click();
         link.delete;
       });
 }
