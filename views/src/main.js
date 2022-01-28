@@ -387,7 +387,7 @@ if (screenshot) {
         console.log(exportCanvas.toDataURL());
         link.download = 'strava3D.png';
         link.href = exportCanvas.toDataURL();
-        // link.click();
+        link.click();
         link.delete;
       });
 }
