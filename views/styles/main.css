@@ -26,12 +26,23 @@ canvas {
 
 #login-button {
     width: 100%;
-    display: block;
+    margin: 0 auto;
+}
+
+#login-container {
+    position: absolute;
+    margin: 20vh 50vw;
+    transform: translate(-50%,-50%);
+    z-index:100;
+    border: 1px solid #ccc;
+    width: 60vw;
+    background-color: rgba(255,255,255,0.15);
 }
 
 .title {
     font-family: Helvetica, sans-serif;
     margin-bottom: 40px;
+    color: #fff;
 }
 
 .centered-buttons {
@@ -95,6 +106,7 @@ select#metric option[value="elevation"] { background-image:url(climb.svg); }
     border: 1px solid var(--strava-color);
     background-color: var(--strava-color);
     border-radius: 15px 0 0 15px;
+    cursor: pointer;
 }
 
 .logo-button {
