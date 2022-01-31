@@ -28,8 +28,8 @@ const renderer = new WebGLRenderer({
     preserveDrawingBuffer: true,
     antialias: true
 });
-document.querySelector('#mainCanva').appendChild(renderer.domElement);
-renderer.domElement.id = "3d-canva";
+document.querySelector('#main-layout').appendChild(renderer.domElement);
+renderer.domElement.id = "canva-3d";
 
 // Set size
 window.addEventListener( 'resize', onWindowResize, false );
@@ -368,7 +368,7 @@ const screenshot = document.getElementById('screenshot');
 
 if (screenshot) {
     screenshot.addEventListener('click', function(e) {
-        let canvas = document.getElementById("3d-canva");
+        let canvas = document.getElementById("canva-3d");
         const link = document.createElement('a');
 
         var exportCanvas = document.createElement("canvas");
@@ -379,12 +379,9 @@ if (screenshot) {
         ctx.fillStyle = "#FFF";
 
         ctx.drawImage(canvas, 0, 0);
-        // ctx.fillRect(0, canvas.height - 46, exportCanvas.width, canvas.height)
-        // ctx.fillStyle = "#000";
-        ctx.font = '24px sans-serif';
-        var waterMark = "Generated with " + window.location.host;
+        ctx.font = '16px sans-serif';
+        var waterMark = "Made with " + window.location.host;
         ctx.fillText(waterMark, 30, canvas.height - 15);
-        console.log(exportCanvas.toDataURL());
         link.download = 'strava3D.png';
         link.href = exportCanvas.toDataURL();
         link.click();

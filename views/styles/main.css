@@ -7,25 +7,22 @@ canvas {
     width: 100%;
     height: 100%;
     background: rgb(36,31,115);
-    background: radial-gradient(circle, rgba(36,31,115,1) 0%, rgba(153,3,33,1) 100%); 
+    background: radial-gradient(circle, rgba(36,31,115,1) 0%, rgba(153,3,33,1) 100%);
+    z-index: 0; 
 }
 
-#mainCanva {
-    position: relative;
+#main-layout {
+    position: fixed;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+#canva-3d {
+    position: absolute;
+    top: 0;
     text-align: center;
 }
-
-#center-container {
-    position: absolute;
-    color: #fff;
-    margin-left: 50vw;
-    margin-top: 30vh;
-    transform: translate(-50%, -50%);
-    padding: 4rem 3rem;
-    background-color: rgba(255, 255, 255, 0.25);
-    color: #fff; 
-}
-
 
 #login-button {
     width: 100%;
@@ -33,26 +30,42 @@ canvas {
 }
 
 .title {
-    /* margin-top: 20%; */
     font-family: Helvetica, sans-serif;
     margin-bottom: 40px;
 }
 
-.centered {
-    margin: auto;
+.centered-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 130px;
+    text-decoration: none;
+    color: #000; 
+    margin: 15px auto;
+}
+
+.center-btn {
+    padding: 12px;
+    background-color: #fff;
+    border-radius: 50%;
+
+}
+
+.center-selectors {
+    position: absolute;
+    margin: 80vh 50vw;
+    transform: translate(-50%,-50%);
+    z-index:100;
 }
 
 #year-selector {
-    position: absolute;
     color: #fff;
-    padding: 1px 0px;
-    margin-left: 50vw;
-    margin-top: 80vh;
-    transform: translate(-50%, -50%);
     border: 2px solid var(--strava-color);
     border-radius: 15px;
     font-family: Helvetica, sans-serif;
     overflow: hidden;
+    display: flex;
+    flex-direction: row;
 }
 
 #year {
@@ -98,26 +111,14 @@ select#metric option[value="elevation"] { background-image:url(climb.svg); }
     text-decoration: none;
 }
 
+
 #code-button {
     right: 16px;
 }
 
-#logout-button {
-    right: 76px;
-}
-
-#screenshot {
-    right: 136px;
-}
-
 .poweredBy {
+    bottom:0;
     position: fixed;
-    margin-top: 95vh;
-    padding: 12px;
-    border-radius: 50%;
-    z-index:100;
-    box-sizing: border-box;
-    transform: translate(-50%, -50%);
 }
 
 .responsive-logo {

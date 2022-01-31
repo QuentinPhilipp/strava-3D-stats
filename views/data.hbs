@@ -15,34 +15,39 @@
         This website is optimized for desktop usage. Use landscape mode.
         </div>
     </div>
-    <div id='mainCanva'>
-        <div id="year-selector">
-            <select name="metric" class="white-option transparent-selector" id="metric">
-                <option selected value="distance">Distance</option>
-                <option value="elevation">Elevation</option>
-            </select> 
-            <select name="year" class="white-option transparent-selector" id="year">
-                {{#each availableYears}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-            </select> 
-            <a id="year-button">Create</a>
-
+    <div id='main-layout'>
+        <div class="center-selectors">
+            <div id="year-selector">
+                <select name="metric" class="white-option transparent-selector" id="metric">
+                    <option selected value="distance">Distance</option>
+                    <option value="elevation">Elevation</option>
+                </select> 
+                <select name="year" class="white-option transparent-selector" id="year">
+                    {{#each availableYears}}
+                    <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select> 
+                <a id="year-button">Create</a>
+            </div>
+            <div class="centered-buttons">
+                <a id="screenshot" class="center-btn" href="#" title="Screenshot">
+                    <img class="logo" src="/styles/screenshot.svg">
+                </a>       
+                <a id="logout-button" class="center-btn" style="" href="/logout" title="Log out">
+                    <img class="logo" src="/styles/logout.svg">
+                </a>
+            </div>
         </div>
-        <a id="screenshot" class="logo-button" href="#" title="Screenshot">
-            <img class="logo" src="/styles/screenshot.svg">
-        </a>       
-        <a id="logout-button" class="logo-button" style="" href="/logout" title="Log out">
-            <img class="logo" src="/styles/logout.svg">
-            
-        </a>
         <a id="code-button" class="logo-button" target="_blank" style="" href="https://github.com/QuentinPhilipp/strava-3D-stats" title="Check code source on GitHub">
             <img class="logo" src="/styles/code.svg">
         </a>
+
+    </div>
+    <footer>
         <a class="poweredBy" target="_blank" style="" href="https://strava.com/" title="Powered by Strava">
             <img class="responsive-logo" src="/styles/pwrdByStrava.png">
         </a>
-    </div>
+    </footer>
 
     <script type="module" src="./src/main.js"></script>
 </body>
