@@ -1,68 +1,93 @@
 [
    {
+      "start_date":"2022-02-05T13:19:04Z",
+      "distance":30208.5,
+      "moving_time":6390,
+      "elevation":528,
+      "type":"Ride"
+   },
+   {
+      "start_date":"2022-02-01T18:10:31Z",
+      "distance":18939.4,
+      "moving_time":1821,
+      "elevation":98,
+      "type":"VirtualRide"
+   },
+   {
       "start_date":"2022-01-27T16:35:44Z",
       "distance":8563.9,
       "moving_time":905,
-      "elevation":24
+      "elevation":24,
+      "type":"VirtualRide"
    },
    {
       "start_date":"2022-01-20T16:48:13Z",
       "distance":30103,
       "moving_time":3538,
-      "elevation":487
+      "elevation":487,
+      "type":"VirtualRide"
    },
    {
       "start_date":"2022-01-18T17:59:28Z",
       "distance":21185,
       "moving_time":2440,
-      "elevation":292
+      "elevation":292,
+      "type":"VirtualRide"
    },
    {
       "start_date":"2022-01-16T15:28:20Z",
       "distance":5019.5,
       "moving_time":1908,
-      "elevation":23.1
+      "elevation":23.1,
+      "type":"Run"
    },
    {
       "start_date":"2022-01-15T12:40:09Z",
       "distance":31321.3,
       "moving_time":6873,
-      "elevation":604
+      "elevation":604,
+      "type":"Ride"
    },
    {
       "start_date":"2022-01-14T17:05:55Z",
       "distance":8863.3,
       "moving_time":1195,
-      "elevation":53
+      "elevation":53,
+      "type":"VirtualRide"
    },
    {
       "start_date":"2022-01-11T17:06:51Z",
       "distance":31345.3,
       "moving_time":3022,
-      "elevation":152
+      "elevation":152,
+      "type":"VirtualRide"
    },
    {
       "start_date":"2022-01-09T13:26:27Z",
       "distance":27534.9,
       "moving_time":3607,
-      "elevation":443
+      "elevation":443,
+      "type":"VirtualRide"
    },
    {
       "start_date":"2022-01-07T16:48:56Z",
       "distance":32192.7,
       "moving_time":3616,
-      "elevation":240
+      "elevation":240,
+      "type":"VirtualRide"
    },
    {
       "start_date":"2022-01-05T17:09:19Z",
       "distance":49930.4,
       "moving_time":5556,
-      "elevation":253
+      "elevation":253,
+      "type":"VirtualRide"
    },
    {
       "start_date":"2022-01-02T10:55:51Z",
       "distance":5037.2,
       "moving_time":1915,
-      "elevation":2.7
+      "elevation":2.7,
+      "type":"Run"
    }
 ]

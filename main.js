@@ -55,7 +55,14 @@ app.get("/", async function (req, res) {
         for (var i = startDate; i <= endDate; i++) {
             years.push(i)
         }
-        res.render("data", {user: req.session.athlete.username, availableYears: years.reverse()});
+        let sports = new Array();
+        sports.push("All sports");
+        sports.push("Cycling");
+        sports.push("Running");
+        sports.push("Swimming");
+        sports.push("Hiking");
+        sports.push("Other");
+        res.render("data", {user: req.session.athlete.username, availableYears: years.reverse(), availableSports: sports});
     }
 });
 
@@ -131,7 +138,8 @@ async function getYearResult(req, year) {
         retryCount = retryCount + 1;
     }
     processedActivities = processActivities(activities);
-    addToCache(processedActivities, year, req.session)
+    console.log(processedActivities);
+    addToCache(processedActivities, year, req.session);
     return processedActivities;
 }
 
@@ -150,7 +158,7 @@ function processActivities(activities) {
     lastActivity = null;
     activities.forEach(activity => {
         // Special case if there is multiple activities in the same day
-        if (lastActivity && sameDay(lastActivity.start_date, activity.start_date)) {
+        if (lastActivity && sameDay(lastActivity.start_date, activity.start_date) && lastActivity.type === activity.type) {
             lastActivity.distance = parseFloat(activity.distance) + parseFloat(lastActivity.distance)
             lastActivity.moving_time = parseFloat(activity.moving_time) + parseFloat(lastActivity.moving_time)
             lastActivity.elevation = parseFloat(activity.total_elevation_gain) + parseFloat(lastActivity.elevation)
@@ -160,7 +168,8 @@ function processActivities(activities) {
                 "start_date": activity.start_date,
                 "distance": activity.distance,
                 "moving_time": activity.moving_time,
-                "elevation": activity.total_elevation_gain
+                "elevation": activity.total_elevation_gain,
+                "type": activity.type
             }
             activitiesProcessed.push(simpleActivity);
             lastActivity = simpleActivity;

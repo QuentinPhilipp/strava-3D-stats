@@ -213,27 +213,55 @@ async function populateActivities(activities, year) {
     if (metricSelector) {
         metric = metricSelector.value;
     }
+
+    let sportSelector = document.getElementById("sport")
+    let sport = "All sports";
+    if (sportSelector) {
+        sport = sportSelector.value;
+    }
+
     for (let index = activities.length -1; index >= 0; index--) {
         const activity = activities[index];
-        const activityDate = new Date(activity.start_date);
+        if (isSportCompatible(activity, sport)) {
+            const activityDate = new Date(activity.start_date);
 
-        let position = getPositionFromDay(activityDate);
-        let height = 0;
-        // Create block
-        if (metric == "distance") {
-            height = activity.distance / 10000; // 10km = 1unit
+            let position = getPositionFromDay(activityDate);
+            let height = 0;
+            // Create block
+            if (metric == "distance") {
+                height = activity.distance / 10000; // 10km = 1unit
+            }
+            else if (metric == "elevation") {
+                height = activity.elevation / 200; // 200m = 1unit
+            }
+            const geometry = new BoxGeometry(0.9, height, 0.9);
+            var cube = new Mesh( geometry, stravaMaterial );
+    
+            cube.position.set(position.x , height/2, position.y);
+            activityGroup.add(cube);
+            addWireframe(cube);
+            await timer(activityAddDelay);
         }
-        else if (metric == "elevation") {
-            height = activity.elevation / 200; // 200m = 1unit
-        }
-        const geometry = new BoxGeometry(0.9, height, 0.9);
-        var cube = new Mesh( geometry, stravaMaterial );
-
-        cube.position.set(position.x , height/2, position.y);
-        activityGroup.add(cube);
-        addWireframe(cube);
-        await timer(activityAddDelay);
     }
+}
+
+function isSportCompatible(activity, sport) {
+    if (sport === "All sports") {
+        return true;
+    }
+    else if (sport === "Cycling" && (activity.type === "Ride" || activity.type === "VirtualRide" || activity.type === "EBikeRide")) {
+        return true;
+    }
+    else if (sport === "Running" && (activity.type === "Run" || activity.type === "VirtualRun")) {
+        return true;
+    }
+    else if (sport === "Swimming" && (activity.type === "Swim")) {
+        return true;
+    }
+    else if (sport === "Hiking" && (activity.type === "Walk" || activity.type === "Hike")) {
+        return true;
+    }
+    return false;
 }
 
 

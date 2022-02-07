@@ -81,11 +81,15 @@ canvas {
 
 #year {
     padding: .9rem 0.15rem .9rem 1rem;
-    margin-right:1.5rem;
 }
 
 #metric {
+    padding: .9rem 0.15rem .9rem 1rem;
+}
+
+#sport {
     padding: .9rem 0.15rem .9rem 1.5rem;
+    margin-right:1.5rem;
 }
 
 select#metric option[value="distance"]   { background-image:url(distance.svg);   }
