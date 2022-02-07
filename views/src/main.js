@@ -390,7 +390,7 @@ async function setup(year, username) {
 
 async function demoSetup() {
     showActivityPlaceholder(new Date());
-    createBottom(dayPlaceholderGroup, "YourName");
+    createBottom(dayPlaceholderGroup, "3D Strava stats");
     
     let activities = await loadExampleData();
     
@@ -415,7 +415,6 @@ window.addEventListener('load', function() {
         let mobileElt = document.getElementById("popup-mobile");
         mobileElt.style.visibility = "hidden";
     }
-
 })
 
 const screenshot = document.getElementById('screenshot');
