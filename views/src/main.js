@@ -62,6 +62,9 @@ var logoGroup = new Group();
 // Materials
 const placeholderMaterial = new MeshBasicMaterial( { color: 0x707070 } );
 const stravaMaterial = new MeshBasicMaterial( { color: 0xFC4C02 } );
+const runningMaterial = new MeshBasicMaterial( { color: 0x2ae830 } );
+const cyclingMaterial = new MeshBasicMaterial( { color: 0xe8bf2a } );
+const swimmingMaterial = new MeshBasicMaterial( { color: 0x2a86e8 } );
 const stravaLogoTopMaterial = new MeshBasicMaterial( { color: 0xffffff } );
 const stravaLogoBottomMaterial = new MeshBasicMaterial( { color: 0xfdb79a } );
 
@@ -226,14 +229,8 @@ async function populateActivities(activities, year) {
             const activityDate = new Date(activity.start_date);
 
             let position = getPositionFromDay(activityDate);
-            let height = 0;
             // Create block
-            if (metric == "distance") {
-                height = activity.distance / 10000; // 10km = 1unit
-            }
-            else if (metric == "elevation") {
-                height = activity.elevation / 200; // 200m = 1unit
-            }
+            const height = getScaleFromSportAndMetric(sport, metric, activity);
             const geometry = new BoxGeometry(0.9, height, 0.9);
             var cube = new Mesh( geometry, stravaMaterial );
     
@@ -243,6 +240,35 @@ async function populateActivities(activities, year) {
             await timer(activityAddDelay);
         }
     }
+}
+
+function getScaleFromSportAndMetric(sport, metric, activity) {
+    let height = 0;
+    if (sport == "Cycling" || sport == "All sports") {
+        if (metric == "distance") {
+            height = activity.distance / 10000; // 10km = 1unit
+        }
+        else if (metric == "elevation") {
+            height = activity.elevation / 200; // 200m = 1unit
+        }
+    }
+    else if (sport == "Running" || sport == "Hiking") {
+        if (metric == "distance") {
+            height = activity.distance / 2000; // 2km = 1unit
+        }
+        else if (metric == "elevation") {
+            height = activity.elevation / 50; // 200m = 1unit
+        }
+    }
+    else if (sport == "Swimming") {
+        if (metric == "distance") {
+            height = activity.distance / 500; // 0.5km = 1unit
+        }
+        else if (metric == "elevation") {
+            height = 0  // No elevation when swimming
+        }
+    }
+    return height;
 }
 
 function isSportCompatible(activity, sport) {
