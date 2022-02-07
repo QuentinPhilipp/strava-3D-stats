@@ -81,7 +81,7 @@ canvas {
     font-family: Helvetica, sans-serif;
     overflow: hidden;
     display: flex;
-    flex-direction: row;
+    flex-flow: row;
 }
 
 #year {
@@ -93,8 +93,31 @@ canvas {
 }
 
 #sport {
-    padding: .9rem 0.15rem .9rem 1.5rem;
+    padding: .9rem 0.15rem .9rem 1rem;
     margin-right:1.5rem;
+}
+
+@media screen and (max-width : 700px) {
+    #year {
+        padding: .9rem 0.15rem .9rem 0.5rem;
+    }
+    
+    #metric {
+        padding: .9rem 0.15rem .9rem 0.5rem;
+    }
+    
+    #sport {
+        padding: .9rem 0.15rem .9rem 0.5rem;
+        margin-right:0.5rem;
+    }
+}
+
+#year-button {
+    padding: 1rem 2rem ;
+    border: 1px solid var(--strava-color);
+    background-color: var(--strava-color);
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 select#metric option[value="distance"]   { background-image:url(distance.svg);   }
@@ -110,13 +133,7 @@ select#metric option[value="elevation"] { background-image:url(climb.svg); }
     border: none;
 }
 
-#year-button {
-    padding: 1rem 2rem ;
-    border: 1px solid var(--strava-color);
-    background-color: var(--strava-color);
-    border-radius: 15px 0 0 15px;
-    cursor: pointer;
-}
+
 
 .logo-button {
     position: fixed;
