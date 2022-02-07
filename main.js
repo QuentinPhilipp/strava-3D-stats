@@ -61,7 +61,6 @@ app.get("/", async function (req, res) {
         sports.push("Running");
         sports.push("Swimming");
         sports.push("Hiking");
-        sports.push("Other");
         res.render("data", {user: req.session.athlete.username, availableYears: years.reverse(), availableSports: sports});
     }
 });
