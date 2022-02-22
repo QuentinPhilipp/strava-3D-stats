@@ -9,4 +9,4 @@ A web application to create a 3D visualisation of your annual statistics in Stra
 - By default, all sports are displayed for the last year. The default metric is "distance" but you can change it to "elevation"
 
 
-Check it on [strava-stats.quentinp.me]
+Check it here: [Strava 3D Stats](https://strava-stats.quentinp.me)
