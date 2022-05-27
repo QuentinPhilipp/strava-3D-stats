@@ -16,10 +16,13 @@ import {
     Shape,
     Vector2,
     Color,
-    GridHelper
+    GridHelper,
   } from "../three/build/three.module.js";
   
 import { OrbitControls } from "../three/examples/jsm/controls/OrbitControls.js";
+import { STLExporter } from "../three/examples/jsm/exporters/STLExporter.js";
+import { saveAs } from './FileSaver.js'
+
 
 const BORDER_WIDTH = 2;
 const BASE_HEIGHT = 4;
@@ -418,6 +421,7 @@ window.addEventListener('load', function() {
 })
 
 const screenshot = document.getElementById('screenshot');
+const exportSTL = document.getElementById('exportSTL');
 
 if (screenshot) {
     screenshot.addEventListener('click', function(e) {
@@ -442,3 +446,11 @@ if (screenshot) {
       });
 }
 
+if (exportSTL) {
+    exportSTL.addEventListener('click', function(e) {
+        const exporter = new STLExporter();
+        const str = exporter.parse(scene);
+        const blob = new Blob([str], {type: 'text/plain'});
+        saveAs(blob, 'strava-3d.stl');
+      });
+}

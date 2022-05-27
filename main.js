@@ -137,7 +137,6 @@ async function getYearResult(req, year) {
         retryCount = retryCount + 1;
     }
     processedActivities = processActivities(activities);
-    console.log(processedActivities);
     addToCache(processedActivities, year, req.session);
     return processedActivities;
 }

@@ -169,6 +169,11 @@ select#metric option[value="elevation"] { background-image:url(climb.svg); }
 }
 
 
+#exportSTL {
+    cursor: pointer;
+}
+
+
 /* MEDIA */
 
 #popup-mobile {
