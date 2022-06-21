@@ -331,8 +331,11 @@ async function loadData(year) {
     const response = await fetch(url);
     const data = await response.json();
     if (data.status === "success") {
-        // console.log(data);
         return data.rawData;
+    }
+    else if (response.status == 403) {
+        console.log("Session expired, logout");
+        window.location.href = window.location.href + "logout";
     }
     else {
         console.log("Error:", data.errorDesc)
