@@ -23,12 +23,18 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         // Expire after 1h
-        expire: 60000 * 60
-    }
+        maxAge: 60 * 60 * 1000
+    },
+    expireDate: null
 }))
+// The cookie will expire after 1h without any use. If the website is used continuously the cookie 
+// won't expire but the expireDate will be over and force a new authentication
 
 
 function isAuth(req) {
+    if (req.session.expireDate && req.session.expireDate < new Date()) {
+        return false;
+    }
     if (req.session && req.session.userID) {
         return true;
     }
@@ -71,6 +77,14 @@ app.get("/coverdata", async (req, res) => {
 })
 
 app.get("/data", async (req, res) => {
+    if (!isAuth(req)) {
+        res.statusCode = 403;
+        res.json({
+            status: 'error',
+            errorDesc: "Session expired"
+        });
+        return;
+    }  
     selectedYear = req.query.year;
     let rateLimit = strava.rateLimiting.fractionReached()
     console.log("Rate limit before the request:", rateLimit);
@@ -94,7 +108,7 @@ app.get("/data", async (req, res) => {
                 rawData: [], 
                 status: 'error',
                 errorDesc: "Too many API calls, try again later"
-            })
+            });
         }
     }
     else {
@@ -102,7 +116,7 @@ app.get("/data", async (req, res) => {
             rawData: [], 
             status: 'error',
             errorDesc: "Bad request. 'year' field is missing"
-        })
+        });
     }
 })
 
@@ -205,6 +219,9 @@ app.get("/exchange_token", (req, res) => {
                 req.session.userID = connectionIds.athlete.id;
                 req.session.athlete = connectionIds.athlete;
                 req.session.access_token = connectionIds.access_token;
+                let currentDateTime = new Date();
+                let expireDate = currentDateTime.setHours(currentDateTime.getHours() + 5);
+                req.session.expireDate = expireDate;
                 res.redirect("/");
             }
         });
