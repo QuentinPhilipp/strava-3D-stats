@@ -80,10 +80,9 @@ app.get("/data", async (req, res) => {
     if (!isAuth(req)) {
         res.statusCode = 403;
         res.json({
-            rawData: [], 
             status: 'error',
             errorDesc: "Session expired"
-        })
+        });
         return;
     }  
     selectedYear = req.query.year;
@@ -109,7 +108,7 @@ app.get("/data", async (req, res) => {
                 rawData: [], 
                 status: 'error',
                 errorDesc: "Too many API calls, try again later"
-            })
+            });
         }
     }
     else {
@@ -117,7 +116,7 @@ app.get("/data", async (req, res) => {
             rawData: [], 
             status: 'error',
             errorDesc: "Bad request. 'year' field is missing"
-        })
+        });
     }
 })
 
@@ -221,7 +220,7 @@ app.get("/exchange_token", (req, res) => {
                 req.session.athlete = connectionIds.athlete;
                 req.session.access_token = connectionIds.access_token;
                 let currentDateTime = new Date();
-                let expireDate = currentDateTime.setHours(currentDateTime.getHours() + 5)
+                let expireDate = currentDateTime.setHours(currentDateTime.getHours() + 5);
                 req.session.expireDate = expireDate;
                 res.redirect("/");
             }
