@@ -425,6 +425,7 @@ window.addEventListener('load', function() {
 
 const screenshot = document.getElementById('screenshot');
 const exportSTL = document.getElementById('exportSTL');
+const settings = document.getElementById('settings-button');
 
 if (screenshot) {
     screenshot.addEventListener('click', function(e) {
@@ -456,4 +457,21 @@ if (exportSTL) {
         const blob = new Blob([str], {type: 'text/plain'});
         saveAs(blob, 'strava-3d.stl');
       });
+}
+
+if (settings) {
+    settings.addEventListener('click', function(e) {
+        const panel = document.getElementById('settings-panel');
+        if (panel.style.display === "none") {
+            panel.style.display = "block";
+          } else {
+            panel.style.display = "none";
+          }
+      });
+}
+
+var slider = document.getElementById("scale-slider");
+
+slider.onchange = function () {
+    activityGroup.scale.set(1, this.value, 1);
 }
