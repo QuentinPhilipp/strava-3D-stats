@@ -1,5 +1,6 @@
 const strava = require('strava-v3');
 const express = require('express');
+const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 const session = require('express-session');
 const path = require('path');
@@ -8,6 +9,7 @@ const port = 8081;
 
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, 'views')));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/styles", express.static(path.join(__dirname, 'views/styles')))
 
 require('dotenv').config()
@@ -21,15 +23,8 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: {
-        // Expire after 1h
-        maxAge: 60 * 60 * 1000
-    },
     expireDate: null
 }))
-// The cookie will expire after 1h without any use. If the website is used continuously the cookie 
-// won't expire but the expireDate will be over and force a new authentication
-
 
 function isAuth(req) {
     if (req.session.expireDate && req.session.expireDate < new Date()) {
@@ -231,6 +226,18 @@ app.get("/exchange_token", (req, res) => {
         // TODO: Complete error handling
         res.redirect("/login");
     }
+});
+
+app.post("/new_name", async (req, res) => {
+    if (isAuth(req)) {
+        const newName = req.body.new_name;
+        if (newName) {
+            req.session.athlete.username = newName;
+            res.statusCode = 200;
+            res.redirect("/");
+        }
+    }
+    res.statusCode = 400;
 });
 
 app.listen(port, () => {
