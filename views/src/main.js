@@ -17,15 +17,18 @@ import {
     Vector2,
     Color,
     GridHelper,
+    Vector3,
   } from "../three/build/three.module.js";
   
 import { OrbitControls } from "../three/examples/jsm/controls/OrbitControls.js";
 import { STLExporter } from "../three/examples/jsm/exporters/STLExporter.js";
+import { ConvexGeometry } from "../three/examples/jsm/geometries/ConvexGeometry.js";
 import { saveAs } from './FileSaver.js'
 
 
 const BORDER_WIDTH = 2;
 const BASE_HEIGHT = 4;
+const TILE_HEIGHT = 0.1;
 
 const renderer = new WebGLRenderer({
     preserveDrawingBuffer: true,
@@ -88,19 +91,37 @@ function createBottom(tiles, username) {
     let bbox = new Box3().setFromObject(tiles);
 
     const width = (bbox.max.x - bbox.min.x) + BORDER_WIDTH;
+    const widthOffset = width*0.15
+
     const length = (bbox.max.z - bbox.min.z) + BORDER_WIDTH;
+    const lengthOffset = length*0.03
+    const height = -BASE_HEIGHT
 
     // Base
-    const bottomGeometry = new BoxGeometry(width, BASE_HEIGHT, length);
+    const verticesOfCube = [
+        // Top level
+        new Vector3(0,0,0),
+        new Vector3(0, 0, length),    
+        new Vector3(width, 0, length),    
+        new Vector3(width, 0, 0),
+
+        // Bottom level
+        new Vector3(width + widthOffset, height, 0 - lengthOffset),   
+        new Vector3(width + widthOffset, height, length + lengthOffset),    
+        new Vector3(0 - widthOffset, height, length + lengthOffset),
+        new Vector3(0 - widthOffset, height, 0 - lengthOffset),
+    ];
+    const bottomGeometry = new ConvexGeometry( verticesOfCube);
+
     let baseMesh = new Mesh( bottomGeometry, stravaMaterial);
-    baseMesh.position.set((Math.abs(bbox.max.x) - Math.abs(bbox.min.x)) / 2, -BASE_HEIGHT/2, (Math.abs(bbox.max.z) - Math.abs(bbox.min.z)) / 2);
+    baseMesh.position.set( -width / 2, -TILE_HEIGHT/2, -length / 2 + BORDER_WIDTH /2);
 
     scene.add( baseMesh );
     addWireframe(baseMesh);
 
 
     // Logo
-    const extrudeSettings = { depth: 3, bevelEnabled: false, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
+    const extrudeSettings = { depth: 5, bevelEnabled: false, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
 
     const stravaLogoTop = [];
     const stravaLogoBottom = [];
@@ -143,7 +164,7 @@ function createBottom(tiles, username) {
         const geometry = new TextGeometry( username, {
             font: font,
             size: size,
-            height: 3,
+            height: 5,
             curveSegments: 6,
             bevelEnabled: true,
             bevelThickness: 0.03,
@@ -152,14 +173,19 @@ function createBottom(tiles, username) {
             bevelSegments: 4
         } );
         var name3D = new Mesh( geometry, stravaLogoTopMaterial);
-        // name3D.rotation.y = -90 * (Math.PI/180);
         name3D.position.set(70, -20, 0);
         logoGroup.add(name3D);
     } );
 
-    logoGroup.position.set( -4.51, -BASE_HEIGHT/2, -23);
+    logoGroup.position.set( -5.1, -BASE_HEIGHT/2, -23);
     logoGroup.rotation.set( 0, -90 * (Math.PI/180), 0 );
+
+    // match base inclination
+    const baseInclination = Math.sin(widthOffset/height);
+
+    logoGroup.rotateOnWorldAxis(new Vector3(0, 0, 1), baseInclination)
     logoGroup.scale.set( 0.05, 0.05, 0.05 );
+
     scene.add( logoGroup );
 
 }
@@ -198,7 +224,7 @@ function getPositionFromDay(day) {
 }
 
 function addDayPlaceholder(day) {
-    const geometry = new BoxGeometry(1, 0.1, 1);
+    const geometry = new BoxGeometry(1, TILE_HEIGHT, 1);
     var cube = new Mesh( geometry, placeholderMaterial );
     let position = getPositionFromDay(day);
     cube.position.set(position.x, 0, position.y);
