@@ -17,7 +17,6 @@ import {
     Vector2,
     Color,
     GridHelper,
-    PolyhedronGeometry,
     Vector3,
   } from "../three/build/three.module.js";
   
@@ -95,7 +94,7 @@ function createBottom(tiles, username) {
     const widthOffset = width*0.15
 
     const length = (bbox.max.z - bbox.min.z) + BORDER_WIDTH;
-    const lengthOffset = length*0.05
+    const lengthOffset = length*0.03
     const height = -BASE_HEIGHT
 
     // Base
@@ -112,8 +111,6 @@ function createBottom(tiles, username) {
         new Vector3(0 - widthOffset, height, length + lengthOffset),
         new Vector3(0 - widthOffset, height, 0 - lengthOffset),
     ];
-    console.log(verticesOfCube)
-    
     const bottomGeometry = new ConvexGeometry( verticesOfCube);
 
     let baseMesh = new Mesh( bottomGeometry, stravaMaterial);
@@ -124,7 +121,7 @@ function createBottom(tiles, username) {
 
 
     // Logo
-    const extrudeSettings = { depth: 3, bevelEnabled: false, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
+    const extrudeSettings = { depth: 5, bevelEnabled: false, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
 
     const stravaLogoTop = [];
     const stravaLogoBottom = [];
@@ -167,7 +164,7 @@ function createBottom(tiles, username) {
         const geometry = new TextGeometry( username, {
             font: font,
             size: size,
-            height: 3,
+            height: 5,
             curveSegments: 6,
             bevelEnabled: true,
             bevelThickness: 0.03,
@@ -176,14 +173,19 @@ function createBottom(tiles, username) {
             bevelSegments: 4
         } );
         var name3D = new Mesh( geometry, stravaLogoTopMaterial);
-        // name3D.rotation.y = -90 * (Math.PI/180);
         name3D.position.set(70, -20, 0);
         logoGroup.add(name3D);
     } );
 
-    logoGroup.position.set( -4.51, -BASE_HEIGHT/2, -23);
+    logoGroup.position.set( -5.1, -BASE_HEIGHT/2, -23);
     logoGroup.rotation.set( 0, -90 * (Math.PI/180), 0 );
+
+    // match base inclination
+    const baseInclination = Math.sin(widthOffset/height);
+
+    logoGroup.rotateOnWorldAxis(new Vector3(0, 0, 1), baseInclination)
     logoGroup.scale.set( 0.05, 0.05, 0.05 );
+
     scene.add( logoGroup );
 
 }
