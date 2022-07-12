@@ -17,15 +17,19 @@ import {
     Vector2,
     Color,
     GridHelper,
+    PolyhedronGeometry,
+    Vector3,
   } from "../three/build/three.module.js";
   
 import { OrbitControls } from "../three/examples/jsm/controls/OrbitControls.js";
 import { STLExporter } from "../three/examples/jsm/exporters/STLExporter.js";
+import { ConvexGeometry } from "../three/examples/jsm/geometries/ConvexGeometry.js";
 import { saveAs } from './FileSaver.js'
 
 
 const BORDER_WIDTH = 2;
 const BASE_HEIGHT = 4;
+const TILE_HEIGHT = 0.1;
 
 const renderer = new WebGLRenderer({
     preserveDrawingBuffer: true,
@@ -88,12 +92,32 @@ function createBottom(tiles, username) {
     let bbox = new Box3().setFromObject(tiles);
 
     const width = (bbox.max.x - bbox.min.x) + BORDER_WIDTH;
+    const widthOffset = width*0.15
+
     const length = (bbox.max.z - bbox.min.z) + BORDER_WIDTH;
+    const lengthOffset = length*0.05
+    const height = -BASE_HEIGHT
 
     // Base
-    const bottomGeometry = new BoxGeometry(width, BASE_HEIGHT, length);
+    const verticesOfCube = [
+        // Top level
+        new Vector3(0,0,0),
+        new Vector3(0, 0, length),    
+        new Vector3(width, 0, length),    
+        new Vector3(width, 0, 0),
+
+        // Bottom level
+        new Vector3(width + widthOffset, height, 0 - lengthOffset),   
+        new Vector3(width + widthOffset, height, length + lengthOffset),    
+        new Vector3(0 - widthOffset, height, length + lengthOffset),
+        new Vector3(0 - widthOffset, height, 0 - lengthOffset),
+    ];
+    console.log(verticesOfCube)
+    
+    const bottomGeometry = new ConvexGeometry( verticesOfCube);
+
     let baseMesh = new Mesh( bottomGeometry, stravaMaterial);
-    baseMesh.position.set((Math.abs(bbox.max.x) - Math.abs(bbox.min.x)) / 2, -BASE_HEIGHT/2, (Math.abs(bbox.max.z) - Math.abs(bbox.min.z)) / 2);
+    baseMesh.position.set( -width / 2, -TILE_HEIGHT/2, -length / 2 + BORDER_WIDTH /2);
 
     scene.add( baseMesh );
     addWireframe(baseMesh);
@@ -198,7 +222,7 @@ function getPositionFromDay(day) {
 }
 
 function addDayPlaceholder(day) {
-    const geometry = new BoxGeometry(1, 0.1, 1);
+    const geometry = new BoxGeometry(1, TILE_HEIGHT, 1);
     var cube = new Mesh( geometry, placeholderMaterial );
     let position = getPositionFromDay(day);
     cube.position.set(position.x, 0, position.y);
