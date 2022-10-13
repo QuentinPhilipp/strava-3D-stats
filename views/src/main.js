@@ -404,7 +404,6 @@ async function restart() {
 }
 
 async function start() {
-    // Start with the past year
     let today = new Date();
     let year = new Date(today.getFullYear()-1, 0, 1);
     setup(year, getUsername());
