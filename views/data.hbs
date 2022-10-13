@@ -24,8 +24,6 @@
     <meta property="twitter:image" content="">
 
     <link rel="stylesheet" href="/styles/main.css">
-    <script type="module" src="./src/main.js"></script>
-
 </head>
 <body>
     <data id="data-container" user="{{user}}"></data>
@@ -40,23 +38,15 @@
                 <img class="logo" src="/styles/settings.svg">
             </div>
             <div id="settings-panel" style="display: none;">
-                <form id="settings-box" onsubmit="reload(event)">
+                <form id="settings-box" action="/new_name" method="post">
                     <div class="form-group">
                         <label for="new_name">Name:</label>
-                        <input name="new_name" id="new_name" type="text" placeholder="{{user}}"/>
+                        <input name="new_name" id="new-name"type="text" placeholder="{{user}}"/>
                         <label for="scale">Scale:</label>
                         <input type="range" id="scale-slider" name="scale" min="0.1" max="2" step=".1" value="1"/>
                         <input type="submit" hidden />
                     </div>
-                    
-                </form>        
-                <script>
-                    function reload(event){
-                        event.preventDefault();
-                        restart();
-                    }
-                </script>  
-                      
+                </form>                
             </div>
         </div>
 
@@ -101,5 +91,6 @@
         </a>
     </footer>
 
+    <script type="module" src="./src/main.js"></script>
 </body>
 </html>

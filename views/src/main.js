@@ -86,9 +86,9 @@ function addWireframe(cube) {
     cube.add( wireframe );
 }
 
-function createBottom() {
-    // Base dimension
-    let bbox = new Box3().setFromObject(dayPlaceholderGroup);
+function createBottom(tiles, username) {
+    // Base
+    let bbox = new Box3().setFromObject(tiles);
 
     const width = (bbox.max.x - bbox.min.x) + BORDER_WIDTH;
     const widthOffset = width*0.15
@@ -118,15 +118,7 @@ function createBottom() {
 
     scene.add( baseMesh );
     addWireframe(baseMesh);
-}
 
-function createName(username) {
-    // Base dimension
-    let bbox = new Box3().setFromObject(dayPlaceholderGroup);
-
-    const width = (bbox.max.x - bbox.min.x) + BORDER_WIDTH;
-    const widthOffset = width*0.15
-    const height = -BASE_HEIGHT
 
     // Logo
     const extrudeSettings = { depth: 5, bevelEnabled: false, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
@@ -382,6 +374,7 @@ async function loadExampleData() {
     const response = await fetch(url);
     const data = await response.json();
     if (data.status === "success") {
+        // console.log(data);
         return data.rawData;
     }
     else {
@@ -391,12 +384,10 @@ async function loadExampleData() {
 }
 
 function wipeData() {
-    for (var i=activityGroup.children.length-1; i >= 0; --i) {
+    for (var i=activityGroup.children.length-1; i >= 0; --i)            
         activityGroup.remove(activityGroup.children[i]);
-    }
-    for (var i=logoGroup.children.length-1; i >= 0; --i) {
-        logoGroup.remove(logoGroup.children[i]);
-    }
+    for (var i=dayPlaceholderGroup.children.length-1; i >= 0; --i)            
+    dayPlaceholderGroup.remove(dayPlaceholderGroup.children[i]);
 }
 
 function getUsername() {
@@ -407,29 +398,23 @@ function getUsername() {
 
 async function restart() {
     let year = document.getElementById("year");
-    let name = document.getElementById("new_name").value;
     wipeData();
     let yearObj = new Date(year.value, 0, 1);
-
-    showActivityPlaceholder(yearObj);
-    createName(name);
-    let activities = await loadData(yearObj.getFullYear());
-    populateActivities(activities, yearObj);
+    setup(yearObj, getUsername());
 }
 
 async function start() {
     // Start with the past year
     let today = new Date();
     let year = new Date(today.getFullYear()-1, 0, 1);
-    
     setup(year, getUsername());
 }
 
 async function setup(year, username) {    
 
     showActivityPlaceholder(year);
-    createBottom();
-    createName(username);
+    createBottom(dayPlaceholderGroup, username);
+    
     let activities = await loadData(year.getFullYear());
     
     populateActivities(activities, year);
@@ -437,8 +422,7 @@ async function setup(year, username) {
 
 async function demoSetup() {
     showActivityPlaceholder(new Date());
-    createBottom();
-    createName("3D Strava stats");
+    createBottom(dayPlaceholderGroup, "3D Strava stats");
     
     let activities = await loadExampleData();
     
@@ -517,6 +501,3 @@ var slider = document.getElementById("scale-slider");
 slider.onchange = function () {
     activityGroup.scale.set(1, this.value, 1);
 }
-
-
-window.restart = restart;
