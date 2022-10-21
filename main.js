@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require('uuid');
 const session = require('express-session');
 const path = require('path');
 const app = express();
-const port = 8081;
 
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, 'views')));
@@ -15,6 +14,7 @@ app.use("/styles", express.static(path.join(__dirname, 'views/styles')))
 require('dotenv').config()
 
 strava.config.redirect_uri = process.env.STRAVA_REDIRECT_URI;
+const port = process.env.PORT;
 
 app.use(session({
     genid: (req) => {

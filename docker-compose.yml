@@ -1,0 +1,14 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  app:
+    build: .
+    ports:
+      - "8081:8080"
+    volumes:
+      - .:/code
+      - logvolume01:/var/log
+    env_file:
+      - .env
+    image: nyitus/strava-3d
+volumes:
+  logvolume01: {}
